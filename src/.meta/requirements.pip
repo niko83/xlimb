@@ -1,0 +1,6 @@
+aiohttp==0.21.6
+ipython==4.2.0
+numpy==1.11.0
+bitarray==0.8.1
+websocket-client==0.37.0
+gunicorn==19.6.0

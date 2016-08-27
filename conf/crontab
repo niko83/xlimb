@@ -1,0 +1,2 @@
+@reboot  /home/ship/venv/bin/python /home/ship/app/src/server.py >> /home/ship/app/logs/ship.log 2>&1
+@reboot  sleep 6 && /home/ship/venv/bin/python /home/ship/app/src/start_bot.py 2 >> /home/ship/app/logs/start_bot.log 2>&1

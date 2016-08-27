@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <script type="text/javascript" src="/static/js/webgl-2d.js"></script>
+
+        <script type="text/javascript" src="/static/js/jquery-2.2.1.js"></script>
+        <script type="text/javascript" src="/static/js/cookie.js"></script>
+        <script type="text/javascript" src="/static/js/jQueryRotate.js"></script>
+        <script type="text/javascript" src="/static/js/base.js"></script>
+        <script type="text/javascript" src="/static/js/start_game_dialog.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.screwdefaultbuttonsV2.min.js"></script>
+                                                     
+  
+        <link href="/static/style/reset.css" rel="stylesheet" media="all" />
+        <link href="/static/style/css.css" rel="stylesheet" media="all" />
+        <link href="/static/style/dialog.css" rel="stylesheet" media="all" />
+    </head>
+    <body>
+<script>
+    if (document.location.host.search('xlimb.ru') != -1){
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-4513568-10', 'auto');
+        ga('send', 'pageview');
+    }
+</script>
+
+
+<div id="dpi"></div>
+        
+<!-- <div cllass="overlay"></div> -->
+<div class="canvas_wrapper">
+    <div class="fps"></div>
+    <div class="connecting" style="display: none"></div>
+    <canvas id='draw' width='1077' height='662'></canvas>
+
+    <div class="health"></div>
+    <div class="fuel"></div>
+    <div class="bullet1"></div>
+    <div class="bullet2"></div>
+
+    <div class="popup errorpanel" style="display: none">Ошибка</div>
+
+    <div class="players"></div>
+</div>
+
+<div class="key_helper" style="display: none">
+    <h3>Keyboard settings:</h3>
+    <br/>
+    <div class="key_wrapper"><span class="key">I</span><span class="key_desc"> - accelerator</span></div>
+    <div class="key_wrapper"><span class="key">J</span><span class="key_desc"> - left</span></div>
+    <div class="key_wrapper"><span class="key">L</span><span class="key_desc"> - right</span></div>
+    <div class="key_wrapper"><span class="key">W</span><span class="key_desc"> - shot weapon 1</span></div>
+    <div class="key_wrapper"><span class="key">E</span><span class="key_desc"> - shot weapon 2</span></div>
+    <div class="go_key_wrapper"><a href="#" class="go_key">Go!</a><span>(Enter)</span></div>
+</div>
+
+
+<div class="queueBox" style="display: none">  
+    <span>Your queue position:</span>
+    <span class="queue_position">???</span>&nbsp;from&nbsp;<span class="queue_size">???</span> 
+    <button class="leave_queue">Cancel</button>
+
+    <div class="key_helper_mini">
+        <div class="key_header">Keyboard settings: </div>
+        <div class="key_wrapper">
+            <div class="key_wrapper_line"><span class="key">I</span><span class="key_desc">&nbsp;-&nbsp;accelerator</span></div>
+            <div class="key_wrapper_line"><span class="key">W</span><span class="key_desc">&nbsp;-&nbsp;shot&nbsp;weapon&nbsp;1</span></div>
+            <div class="key_wrapper_line"><span class="key">J</span><span class="key_desc">&nbsp;-&nbsp;left</span></div>
+            <div class="key_wrapper_line"><span class="key">E</span><span class="key_desc">&nbsp;-&nbsp;shot&nbsp;weapon&nbsp;2</span></div>
+            <div class="key_wrapper_line"><span class="key">L</span><span class="key_desc">&nbsp;-&nbsp;right</span></div>
+        </div>
+    </div>
+
+    <div class="banner_queue">
+
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <ins class="adsbygoogle"
+                style="display:inline-block;width:336px;height:280px"
+                data-ad-client="ca-pub-9499936329505066"
+                data-ad-slot="7425664397"></ins>
+            <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+</div>
+
+<div class="startGameDialog" style="display: none"> 
+    <div class="header">
+        <input type="text" placeholder="Your name" name="name" maxlength="15" />
+        <a class="settings" href="#">&nbsp;</a>
+    </div>
+
+    <div class="middle" style="display: none">
+        <div class="ship_menu ship1">
+                <a href="#" class="ship_tab tab1" data-show_cls="ship1">&nbsp;</a>
+                <a href="#" class="ship_tab tab2" data-show_cls="ship2">&nbsp;</a>
+                <a href="#" class="ship_tab tab3" data-show_cls="ship3">&nbsp;</a>
+        </div>
+
+        <div class="ship_block ship1" style="display:none">
+                <div class="ship_icon"></div>
+                <div class="color_block">
+                    <input type="radio" name="ship_type" class="ship10" value="11" checked="on" />
+                </div>
+
+                <table class="weapon"><tr><td>
+                    <div><input type="radio" name="sh1_weapon1" id="w11" value="1" checked="on" /><label for="w11">gun1</label></div>
+                    <div><input type="radio" name="sh1_weapon1" id="w12" value="2" /><label for="w12">gun2</label></div>
+                    <div><input type="radio" name="sh1_weapon1" id="w13" value="3" /><label for="w13">gun3</label></div>
+                </td><td>
+                    <div><input type="radio" name="sh1_weapon2" id="w21" value="1" /><label for="w21">T. Rocket</label></div>
+                    <div><input type="radio" name="sh1_weapon2" id="w22" value="2" /><label for="w22">Fireball</label></div>
+                    <div><input type="radio" name="sh1_weapon2" id="w23" value="3" checked="on" /><label for="w23">Harpoon</label></div> 
+                </td></tr></table>
+                <div class="desc">
+                    <span class="title">Helicopter</span>
+                    <span class="name">Health</span>: <span class="value">standart</span><br/>
+                    <span class="name">Ship weight</span>: <span class="value">standart</span><br/> 
+                    <span class="name">Acceleration</span>: <span class="value">standart</span><br/> 
+                    <span class="name">Сontrollability</span>: <span class="value">standart</span><br/> 
+                </div>
+        </div>
+        <div class="ship_block ship2" style="display:none">
+                <div class="ship_icon"></div>
+                <div class="color_block">
+                    <input type="radio" name="ship_type" class="ship20" value="20" />
+                    <input type="radio" name="ship_type" class="ship21" value="21" />
+                    <input type="radio" name="ship_type" class="ship22" value="22" />
+                </div>
+                <table class="weapon"><tr><td>
+                    <div><input type="radio" name="sh2_weapon1" id="w11" value="1" checked="on" /><label for="w11">gun1</label></div>
+                    <div><input type="radio" name="sh2_weapon1" id="w12" value="2" /><label for="w12">gun2</label></div>
+                    <div><input type="radio" name="sh2_weapon1" id="w13" value="3" /><label for="w13">gun3</label></div>
+                </td><td>
+                    <div><input type="radio" name="sh2_weapon2" id="w21" value="1" /><label for="w21">T. Rocket</label></div>
+                    <div><input type="radio" name="sh2_weapon2" id="w22" value="2" /><label for="w22">Fireball</label></div>
+                    <div><input type="radio" name="sh2_weapon2" id="w23" value="3" checked="on" /><label for="w23">Harpoon</label></div> 
+                </td></tr></table>
+                <div class="desc">
+                    <span class="title">Grasshopper</span>
+                    <span class="name">Health</span>: <span class="value minus">-20%</span><br/>
+                    <span class="name">Ship weight</span>: <span class="value minus">-30%</span><br/> 
+                    <span class="name">Acceleration</span>: <span class="value plus">+15%</span><br/> 
+                    <span class="name">Сontrollability</span>: <span class="value plus">+12%</span><br/> 
+                </div>
+        </div>
+        <div class="ship_block ship3" style="display:none">
+                <div class="ship_icon"></div>
+                <div class="color_block">
+                    <input type="radio" name="ship_type" class="ship30" value="30" />
+                    <input type="radio" name="ship_type" class="ship31" value="31" />
+                    <input type="radio" name="ship_type" class="ship32" value="32" />
+                </div>
+                <table class="weapon"><tr><td>
+                    <div><input type="radio" name="sh3_weapon1" id="w11" value="1" checked="on" /><label for="w11">gun1</label></div>
+                    <div><input type="radio" name="sh3_weapon1" id="w12" value="2" /><label for="w12">gun2</label></div>
+                    <div><input type="radio" name="sh3_weapon1" id="w13" value="3" /><label for="w13">gun3</label></div>
+                </td><td>
+                    <div><input type="radio" name="sh3_weapon2" id="w21" value="1" /><label for="w21">T. Rocket</label></div>
+                    <div><input type="radio" name="sh3_weapon2" id="w22" value="2" /><label for="w22">Fireball</label></div>
+                    <div><input type="radio" name="sh3_weapon2" id="w23" value="3"  checked="on" /><label for="w23">Harpoon</label></div> 
+                </td></tr></table>
+
+                <div class="desc">
+                    <span class="title">Flier</span>
+                    <span class="name">Health</span>: <span class="value plus">+70%</span><br/>
+                    <span class="name">Ship weight</span>: <span class="value plus">+30%</span><br/> 
+                    <span class="name">Acceleration</span>: <span class="value minus">-15%</span><br/> 
+                    <span class="name">Сontrollability</span>: <span class="value minus">-10%</span><br/> 
+                </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <a href="" class="go">&nbsp;</a>
+    </div>
+</div>
+
+<!-- Reformal -->
+<script type="text/javascript">
+    var reformalOptions = {
+        project_id: 974930,
+        project_host: "xlimb.reformal.ru",
+        tab_orientation: "right",
+        tab_indent: "50%",
+        tab_bg_color: "#F05A00",
+        tab_border_color: "#FFFFFF",
+        tab_image_url: "http://tab.reformal.ru/T9GC0LfRi9Cy0Ysg0Lgg0L%252FRgNC10LTQu9C%252B0LbQtdC90LjRjw==/FFFFFF/a08a7c60392f68cb33f77d4f56cf8c6f/right/1/tab.png",
+        tab_border_width: 2
+    };
+    
+    (function() {
+        var script = document.createElement('script');
+        script.type = 'text/javascript'; script.async = true;
+        script.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'media.reformal.ru/widgets/v3/reformal.js';
+        document.getElementsByTagName('head')[0].appendChild(script);
+    })();
+</script><noscript><a href="http://reformal.ru"><img src="http://media.reformal.ru/reformal.png" /></a><a href="http://xlimb.reformal.ru">Oтзывы и предложения для xlimb</a></noscript>
+</body>
+</html>

@@ -1,0 +1,12 @@
+*.pyc
+*.log
+*.log.*
+*.pid
+*.socket
+logs
+venv
+nohup.out
+.cache
+.ropeproject
+_build
+__pycache__

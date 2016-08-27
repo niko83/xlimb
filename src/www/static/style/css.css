@@ -1,0 +1,236 @@
+body {
+    background-color: #050505;
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial;
+}
+ canvas#draw { 
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+ }
+ .overlay{
+     background: black;
+     position: absolute;
+     width: 100%;
+     height: 100%;
+     z-index: 50;
+ }
+.canvas_wrapper{
+    background: url('/static/images/wrapper.png') no-repeat #000;
+    position: absolute;
+    z-index: 5;
+    width: 1236px;
+    height: 683px;
+    top: 50%;
+    margin-top: -342px;
+    left: 50%;
+    margin-left: -618px;
+ }
+
+ .connecting{
+     position: absolute;
+     top: 0;
+     width: 300px;
+     left: 50%;
+     padding: 5px;
+     border-radius: 0 0 10px 10px;
+     margin-left: -150px;
+     background: #700;
+     color: #fff;
+     font-size: 14px;
+     text-align: center;
+     z-index: 1000;
+ }
+ .fps{
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 42px;
+     background: #000;
+     color: #aaa;
+     font-size: 14px;
+     text-align: center;
+ }
+
+#dpi {
+  height: 1in;
+  left: -100%;
+  position: absolute;
+  top: -100%;
+  width: 1in;
+}
+
+ .players{
+     position: absolute;
+     left: 17px;
+     bottom: 12px;
+     width: 120px;
+     color: white;
+     font-size: 11px;
+     height: 226px;
+     font-family: Arial; 
+     overflow: hidden;
+ }
+
+ .players .stats, .players .name{
+     height: 22px;
+     line-height: 22px;
+ }
+
+ .players .name{
+     width: 80px;
+     float: left;
+     overflow: hidden;
+ }
+
+ .players .stats{
+     text-align: left;
+     width: 40px;
+     float: right;
+ }
+ .players .my{
+     color: yellow;
+ }
+
+ .bonus{
+    width: 40px;
+    height: 40px;
+ }
+
+ .bonus .icon{
+    background: url('/static/images/bonus.png') no-repeat;
+ }
+
+ .bonus .icon.bonus_100{  /* fuel */
+    background: url('/static/images/fuel.png') no-repeat;
+    width: 50px; height: 59px;
+ }
+ .bonus .icon.bonus_200{  /* health */ 
+    background: url('/static/images/health.png') no-repeat;
+    width: 45px; height: 52px;
+ }
+ .bonus .icon.bonus_220{
+    background: url('/static/images/health.png') no-repeat;
+    width: 45px; height: 52px;
+ }
+ .bonus .icon.bonus_250{
+    background: url('/static/images/health.png') no-repeat;
+    width: 45px; height: 52px;
+ }
+ .bonus .icon.bonus_300{  /* ammo */  
+    background: url('/static/images/ammo50.png') no-repeat;
+    width: 50px; height: 60px;
+ }
+ .bonus .icon.bonus_400{ /* rocket */   
+    background: url('/static/images/rocket50.png') no-repeat;
+    width: 50px; height: 60px;
+ }
+
+
+ .errorpanel{
+    z-index: 200;
+    box-shadow: 0 0 25px 25px rgba(a,0,0,0.74);
+    background-color: white;
+    border: 1px solid red;
+    border-radius: 10px;
+    width: 200px;
+    height: 100px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+ }
+
+.pseudolink{
+    color: blue;
+    text-decoration: none;
+    border-bottom: 1px blue dashed;
+}
+
+
+/* .health:before, .fuel:before, .bullet1:before, .roket:before { */
+   /* content: ""; */
+   /* display: inline-block; */
+   /* vertical-align: middle; */
+   /* overflow: hidden; */
+   /* text-indent: -999px; */
+   /* width: 25px; height: 25px; */
+   /* background: red; */
+   /* background: url('/static/images/bonus.png') 0 0 no-repeat; */
+   /* background-position: -0px -0px; */
+/* } */
+
+/* .health:before{background-position: -10px -12px;} */
+/* .roket:before {background-position: -10px -110px;} */
+/* .bullet1:before {background-position: -10px -65px;} */
+/* .fuel:before {background-position: -10px -165px;} */
+
+ .health, .fuel, .bullet1, .bullet2 {
+     position: absolute;
+     width: 60px;
+     height: 25px;
+     text-align: center;
+     vertical-align: middle;
+     line-height: 18px;
+     font-size: 18px;
+     font-weight: bold;
+     font-family: Arial;
+     left: 57px;
+ }
+ .health {top: 52px;}
+ .fuel{top: 133px;}
+ .bullet1{top: 211px;}
+ .bullet2{top: 292px;}
+
+ .little{color: red;}
+
+
+@-webkit-keyframes text_glow{
+    from { text-shadow: 0px 0px 0px #000; }
+    to { 
+        text-shadow: 0px 0px 50px #f00,0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00,
+        0px 0px 20px #f00,
+        0px 0px 20px #f00,
+        0px 0px 20px #f00,
+        0px 0px 20px #f00,
+        0px 0px 20px #f00
+    }
+}
+@keyframes text_glow {
+    from { text-shadow: 0px 0px 0px #000; }
+    to { 
+        text-shadow: 0px 0px 50px #f00,0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00, 0px 0px 50px #f00,
+        0px 0px 20px #f00,
+        0px 0px 20px #f00,
+        0px 0px 20px #f00,
+        0px 0px 20px #f00,
+        0px 0px 20px #f00
+    }
+}
+ .no_one{
+    color: red;
+    animation-name: text_glow;
+    animation-duration: 0.5s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    -webkit-animation-name: text_glow;
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-direction: alternate;
+    -webkit-animation-iteration-count: infinite;
+}
+
+ .alot{color: green;}
+ .middle{color: orange;}
+
+
+ .name_title {
+     position: absolute;
+     width: 120px; 
+     color: whitesmoke;
+     font-weight: normal;
+     font-size: 12px;
+     height: 12px;
+     text-align: center;
+     overflow: hidden;
+ }

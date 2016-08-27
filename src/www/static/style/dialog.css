@@ -1,0 +1,292 @@
+
+
+.startGameDialog a{
+     outline: none;
+     text-decoration: none;
+ }
+ .startGameDialog input{
+     outline: none;
+     text-align: center;
+ }
+
+ .startGameDialog{
+    width: 392px;
+    position: absolute;
+    left: 50%;
+    margin-left: -200px;
+    margin-top: -200px;
+    top: 50%;
+    z-index: 100;
+    /* background-color: white; */
+ }
+
+    .startGameDialog .header {
+        background: url('/static/images/crop/panel.png') no-repeat;
+        height: 181px;
+    }
+
+    .startGameDialog .middle {
+        height: 241px; /* 31 + 210 */
+    }
+
+        .startGameDialog .middle .ship_menu{
+            position: relative;
+            width: 392px; 
+            height: 31px;
+            background: url('/static/images/crop/panel.png') no-repeat;
+        }
+            .startGameDialog .middle .ship_menu.ship1{
+                background-position: 0 -181px;
+            }
+            .startGameDialog .middle .ship_menu.ship2{
+                background-position: 0 -212px;
+            }
+            .startGameDialog .middle .ship_menu.ship3{
+                background-position: 0 -243px;
+            }
+
+    .startGameDialog .footer {
+        height: 69px;
+    }
+        .go {
+            width: 260px;
+            height: 69px;
+            display: block;
+            position: relative;
+            float: right;
+            background: url('/static/images/crop/footer.png') no-repeat;
+        }
+
+.ship_tab{
+    display: block;
+    width: 110px; 
+    height: 40px;
+    float: left;
+    display: block;
+}
+.ship_tab + .ship_tab {
+    margin-left: 30px;
+}
+
+ .startGameDialog .header input{
+    position: absolute;
+    top: 87px;
+    width: 190px;
+    left: 140px;
+    background-color: transparent;
+    color: white;
+    font-size: 16px;
+    padding: 0 7px;
+    border: none;
+ }
+
+ .startGameDialog .header .settings{
+    position: absolute;
+     display: block;
+     width: 197px;
+     height: 35px;
+     top: 130px;
+     left: 20px;
+     color: white;
+     font-size: 18px;
+     outline: none;
+    background: url('/static/images/crop/settings.png') no-repeat;
+ }
+
+ .startGameDialog .header .settings:hover{
+    background-position: 0 -35px;
+ }
+
+
+.color_block{
+    position: absolute;
+    width: 90px;
+    height: 30px;
+    left: 15px;
+    top: 167px;
+}
+
+.color_block .styledRadio {
+    float: left;
+    margin-left: 4px;
+}
+
+ .startGameDialog .middle .ship_block{
+    background: url('/static/images/crop/panel.png') no-repeat 0 -274px;
+    height: 212px;
+    width: 392px;
+    position: absolute;
+ }
+
+
+ .startGameDialog table {
+     margin-left: 140px;
+     margin-top: 42px;
+ }
+ .startGameDialog table td{
+     width: 108px;
+     height: 20px;
+ }
+ .startGameDialog table div {
+     vertical-align: middle;
+ }
+.startGameDialog table .styledRadio {
+    display: inline-block;
+    margin-right: 5px;
+}
+ .startGameDialog table label{
+    text-shadow: 0px 0px 3px #000000;
+    color: white;
+ }
+
+.startGameDialog .desc {
+    color: white;
+    width: 225px;
+    height: 68px;
+    position: absolute;
+    bottom: 15px; 
+    right: 15px;
+    background: rgba(0,0,0, 0.5);
+    padding: 5px;
+    font-size: 90%;
+    line-height: 17px;
+    text-shadow: 0px 0px 3px #000;
+    border-radius: 2px;
+}
+
+.startGameDialog .desc .title{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 3px 10px;
+    color: orange;
+    background: rgba(0,0,0, 0.5);
+}
+.startGameDialog .desc .name{color: whitesmoke;}
+.startGameDialog .desc .value.plus{color: #7f7;}
+.startGameDialog .desc .value.minus{color: #f77;}
+.startGameDialog .desc .value{color: gray;}
+.startGameDialog .desc .value.indifferent{color: #aaf;}
+
+.ship_icon {
+   width: 150px;
+   height: 150px;
+   background: url('/static/images/crop/ships.png') no-repeat;
+   position: absolute;
+}
+.ship_icon.ship10 {background-position: 0 0;}
+.ship_icon.ship20 {background-position: 0 -150px;}
+.ship_icon.ship21 {background-position: -150px -150px;}
+.ship_icon.ship22 {background-position: -300px -150px;}
+.ship_icon.ship30 {background-position: 0 -300px;}
+.ship_icon.ship31 {background-position: -150px -300px;}
+.ship_icon.ship32 {background-position: -300px -300px;}
+
+
+
+.key_helper{
+    width: 300px;
+    height: 220px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background: whitesmoke;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -100px;
+    margin-left: -150px;
+    padding: 20px;
+    z-index: 50;
+    box-shadow: 0 0 80px 80px rgba(0,128,240,0.2), 0 0 50px 50px rgba(0,0,255,0.1);
+}
+.key_helper h3{
+    font-weight: bold;
+}
+.key_helper .key{
+    display: inline-block;
+    color: black;
+    font-size: 25px;
+    font-weight: bold;
+    width: 25px;
+}
+.key_helper .key_desc{
+    font-size: 20px;
+}
+.key_helper .go_key_wrapper{
+    text-align: right;
+    padding: 10px;
+}
+.key_helper .go_key_wrapper span{
+    color: gray;
+    font-size: 90%;
+}
+.key_helper .key_wrapper {
+    padding-left: 20px;
+}
+.key_wrapper + .key_wrapper{
+    margin-top: 5px;
+}
+.key_helper .go_key{
+    color: green;
+    text-shadow: 0px 0px 3px #0f0;
+    font-size: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    outline: none;
+}
+.key_helper .go_key:hover{
+    text-shadow: 0px 0px 15px #0f0, 0px 0px 3px #0f0;
+}
+
+.key_helper_mini {
+    font-size: 80%;
+    line-height: 18px;
+}
+
+.key_helper_mini .key_header{
+    text-align: center;
+}
+.key_helper_mini .key_wrapper{
+    padding-left: 50px;
+}
+.key_helper_mini .key_wrapper_line{
+    text-align: left;
+    float: left;
+    width: 120px;
+    overflow: hidden;
+}
+.key_helper_mini .key {
+    color: white;
+    font-weight: bold;
+}
+.key_helper_mini .key_desc {
+}
+
+
+.queueBox{
+    width: 336px;
+    margin-left: -188px;
+    height: 390px;
+    position: absolute;
+    left: 50%;
+    margin-top: -200px;
+    top: 50%;
+    z-index: 200;
+    background-color: #040404;
+    color: #aaa;
+    box-shadow: 0 0 80px 80px rgba(0,128,240,0.2), 0 0 50px 50px rgba(0,0,255,0.2), 0 0 20px 20px rgba(0,0,255,0.2), 0 0 10px 10px rgba(0,0,255,0.2);
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px;
+}
+.queue_position{
+    font-weight: bold;
+    color: white;
+}
+
+.banner_queue {
+    position: absolute;
+    bottom: 20px;
+    width: 336px;
+    height: 280px;
+}
