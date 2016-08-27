@@ -3,6 +3,8 @@ import random
 import uuid
 from math import floor, ceil
 
+from xlimb_helper import get_polygon_idx_collision
+
 import app
 from app.constants import CELL_STEP
 from app.helper import get_angle_collision, polygon_cell
@@ -162,7 +164,7 @@ class Bullet:
 
         try:
             if polygon_cell[self.approx_x][self.approx_y]:
-                polygon_idx = app.helper.get_polygon_idx_collision(candidat_position_x, candidat_position_y)
+                polygon_idx = get_polygon_idx_collision(candidat_position_x, candidat_position_y)
                 if polygon_idx:
                     polygon = all_polygons[polygon_idx]
                 else:

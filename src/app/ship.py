@@ -3,11 +3,13 @@ import random
 from datetime import datetime
 from math import floor, pi
 
+from xlimb_helper import distance, get_polygon_idx_collision
+
 import app
 from app.constants import MU, G, G_DIVE, MAP_SIZE, CELL_STEP, DeadReason
 from app.engine import Engine
 from app.gun import Gun
-from app.helper import in_polygon_info, distance, get_polygon_idx_collision, get_polygon_info,  get_angle_collision, polygon_cell
+from app.helper import in_polygon_info, get_polygon_info,  get_angle_collision, polygon_cell
 from app.polygon_data import all_polygons
 from app.vector import Vector2D
 

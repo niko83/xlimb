@@ -4,15 +4,9 @@ import pickle
 
 from bitarray import bitarray
 
-from my_module import (
-    distance,
-    in_polygon as in_polygon_idx,
-    resolve_line,
-    get_polygon_idx_collision
-)
+from xlimb_helper import resolve_line, get_polygon_idx_collision
 
 from app.constants import MAP_SIZE_APPROX, CELL_STEP, ROOT_DIR
-from app.polygon_data import all_polygons
 from app.vector import Vector2D
 
 
@@ -25,19 +19,18 @@ def in_polygon_info(x, y, polygon_info):
 
     return _in_polygon(x, y, polygon_info[0], polygon_info[1])
 
+
 def _in_polygon(x, y, xp, yp):
-    c=0
+    c = 0
     for i in range(len(xp)):
         if (
-            (
-                (yp[i]<=y<yp[i-1]) or (yp[i-1]<=y<yp[i])
-            ) and (
-                x > (xp[i-1]-xp[i]) * (y-yp[i]) / (yp[i-1]-yp[i]) + xp[i]
-            )
+            ((yp[i]<=y<yp[i-1]) or (yp[i-1]<=y<yp[i])) and
+            (x > (xp[i-1]-xp[i]) * (y-yp[i]) / (yp[i-1]-yp[i]) + xp[i])
         ):
             c = 1 - c
 
     return c % 2 == 1
+
 
 def get_intersection_angle(p1, p2, p3, p4):
     K1, B1 = resolve_line((p1.x, p1.y), (p2.x, p2.y))
@@ -54,7 +47,7 @@ def get_intersection_angle(p1, p2, p3, p4):
     if (p1.x<=x<=p2.x) or (p2.x<=x<=p1.x):  # has intersection
 
         nil_vector_ship = (p2 - p1)
-        nil_vector_polygon1= (p4 - p3).angle()
+        nil_vector_polygon1 = (p4 - p3).angle()
         if nil_vector_polygon1 >= math.pi:
             nil_vector_polygon1 -= math.pi
 
@@ -78,18 +71,16 @@ def get_angle_collision(object2d, polygon):
             return angle
 
 
-
-
-def dump_edge():
-    for polygon in all_polygons:
-        print(
-            '{%d, %d, %d, %d};' % (
-                min(p.x for p in polygon),
-                max(p.x for p in polygon),
-                min(p.y for p in polygon),
-                max(p.y for p in polygon)
-            )
-        )
+#  def dump_edge():
+    #  for polygon in all_polygons:
+        #  print(
+            #  '{%d, %d, %d, %d};' % (
+                #  min(p.x for p in polygon),
+                #  max(p.x for p in polygon),
+                #  min(p.y for p in polygon),
+                #  max(p.y for p in polygon)
+            #  )
+        #  )
 
 
 def get_polygon_info(polygon):

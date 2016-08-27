@@ -1,6 +1,8 @@
 import math
 import random
 
+from xlimb_helper import get_polygon_idx_collision
+
 import app
 from app.constants import MAP_SIZE, MU
 from app.vector import Vector2D
@@ -46,7 +48,7 @@ class Bonus:
                     x=random.random() * MAP_SIZE[0],
                     y=random.random() * MAP_SIZE[1],
                 )
-                if not app.helper.get_polygon_idx_collision(self.candidat_position.x, self.candidat_position.y):
+                if not get_polygon_idx_collision(self.candidat_position.x, self.candidat_position.y):
                     self.current_position = self.candidat_position
                     break
 
@@ -105,7 +107,7 @@ class Bonus:
             self.current_position.y - sum_vector.y
         )
 
-        if app.helper.get_polygon_idx_collision(self.candidat_position.x, self.candidat_position.y):
+        if get_polygon_idx_collision(self.candidat_position.x, self.candidat_position.y):
             self.life_limit = -1
             return
 

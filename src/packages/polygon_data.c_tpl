@@ -1,0 +1,34 @@
+typedef struct {
+    int x;
+    int y;
+} Point;
+
+typedef Point (point_list)[];
+
+typedef struct {
+    int x_min;
+    int x_max;
+    int y_min;
+    int y_max;
+} Edge;
+
+
+//__PLACEHOLDER_1__
+// EXAMPLE static point_list polygon2 = {{0, 0}, {3371, 0}, {3371, 50}, {0, 20}};
+
+//__PLACEHOLDER_2__
+// EXAMPLE static Edge p2  =  {0, 3371, 0, 50};
+
+
+//__PLACEHOLDER_4__
+// int * polygon_cell[100][100];
+
+
+static struct {
+  point_list *mtp;
+  int el_count;
+  Edge *edge;
+} all_polygons[] = {
+//__PLACEHOLDER_3__
+//  EXAMPLE {(point_list*)polygon2,  sizeof(polygon2)/ sizeof(polygon2[0]) , &p2},
+};
