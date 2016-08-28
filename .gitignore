@@ -10,6 +10,7 @@ nohup.out
 .ropeproject
 _build
 __pycache__
+cache_map.pickle
 
 build
 polygon_data.c

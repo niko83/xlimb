@@ -144,10 +144,6 @@ class Bullet:
 
     def calculate_position(self):
 
-        if self.life_limit < app.constants.FRAME_INTERVAL:
-            self.life_limit = -1
-            return
-
         self.life_limit -= app.constants.FRAME_INTERVAL
 
         if self.able_to_make_tracing > -100:

@@ -6,7 +6,7 @@ ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
 TEST_BOT = False
 DEBUG = True
 
-ROOMS_BY_CORE, CLIENT_ROOM_LIMIT = 10, 5
+ROOMS_BY_CORE, CLIENT_ROOM_LIMIT = 6, 4
 INTERVAL_QUEUE_NOTIFICATION = 1
 
 if TEST_BOT:
