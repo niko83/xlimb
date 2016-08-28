@@ -2,6 +2,10 @@ from app.castomization import ship_type_to_ship
 from app.constants import DEBUG
 from app.game_room import Client
 
+import logging
+
+logger = logging.getLogger('xlimb.' + __name__)
+
 
 def _join(loop, ws, data):
     from app.game_rooms import get_free_room, queue, restore_socket
@@ -13,14 +17,14 @@ def _join(loop, ws, data):
         weapon2 = int(data[2])
         name = data[3].replace('"', '').replace("'", '').replace('\\', '')  # @FIXME
         ship_type = int(data[4])
-    except Exception as e:
-        print('wrong input data ', data)
+    except Exception:
+        logger.warning('wrong input data %s', data)
         if DEBUG:
             raise
         return
 
     if client_pk and restore_socket(client_pk, ws):
-        print('restore socket', client_pk)
+        lggger.info('Restore socket for client_pk: %s', client_pk)
         return
 
     ship = ship_type_to_ship[ship_type](name, weapon1, weapon2)
@@ -49,5 +53,5 @@ def processing(loop, ws, msg_str):
         if room:
             room.set_controls(ship_pk, int(accelerator), int(vector), int(shot), int(shot2))
     else:
-        print('not handled message: %s' % msg_str)
+        logger.warning('Not handled message: "%s"', msg_str)
         return

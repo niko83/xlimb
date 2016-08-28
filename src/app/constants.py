@@ -1,6 +1,10 @@
 from math import floor
+import logging
 import os
 ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
+
+LOG_DIR = os.path.abspath(os.path.join( ROOT_DIR, '..', 'logs'))
+LOGGER_LEVEL = logging.INFO
 
 
 TEST_BOT = False

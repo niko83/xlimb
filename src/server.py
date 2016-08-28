@@ -3,8 +3,14 @@ from sys import argv
 
 from aiohttp import web
 
+from app import init_log
 from app import game
 from app.game_rooms import queue
+init_log()
+
+import logging
+logger = logging.getLogger('xlimb.' + __name__)
+logger.info('Server start: %s', argv)
 
 
 app = web.Application()
@@ -13,6 +19,8 @@ queue.init_loop(app.loop)
 queue.start()
 
 async def game_room(request):
+    logger.info("Start request: %s", request.transport.get_extra_info('peername'))
+
     ws = web.WebSocketResponse()
     await ws.prepare(request)
 

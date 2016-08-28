@@ -38,7 +38,7 @@ def _get_point_map(points):
             else:
                 point_map[b.approx_x][b.approx_y] = ([b], list(b.short_data))
         except IndexError:
-            print('Not found point map', b.approx_x, b.approx_y)
+            logger.warning('Not found point map [%s, %s]', b.approx_x, b.approx_y)
 
     return point_map
 
@@ -256,7 +256,6 @@ class GameRoom(object):
                     for cl_idx, cl in enumerate(self.clients):
                         if cl.ship and cl.ship.pk == sh.pk:
                             if not cl.ws.closed:
-                                #  print(sh.dead_reason, sh.lifetime)
                                 cl.ws.send_str(json.dumps({
                                     'command': 'socket_closed',
                                     'data': {
@@ -302,8 +301,7 @@ class GameRoom(object):
                 if client:
                     self.add_listenter(client)
         except RuntimeError as e:
-            print('Unhandled exception')
-            print(e)
+            logger.exception('Unhandled exception')
 
     def _bullet_bonuses_processing(self, client):
 
@@ -365,17 +363,9 @@ class GameRoom(object):
                 client
             )
 
-            try:
-                client.ws.send_bytes(struct.pack('h'*(len(bin_data_bullets)+3), 10, bckg_x, bckg_y, *map(int, bin_data_bullets)))
-            except:
-                print('Wrong bullet bin data', bin_data_bullets)
-                raise
+            client.ws.send_bytes(struct.pack('h'*(len(bin_data_bullets)+3), 10, bckg_x, bckg_y, *map(int, bin_data_bullets)))
             client.ws.send_bytes(struct.pack('h'*(len(bin_data_bonuses)+3), 20, bckg_x, bckg_y, *map(int, bin_data_bonuses)))
-            try:
-                client.ws.send_bytes(struct.pack('h'*(len(bin_data_ships)+3), 30, bckg_x, bckg_y, *map(int, bin_data_ships)))
-            except:
-                print('Wrong ship bin data', bin_data_ships)
-                raise
+            client.ws.send_bytes(struct.pack('h'*(len(bin_data_ships)+3), 30, bckg_x, bckg_y, *map(int, bin_data_ships)))
 
             """
             #  polygon_msg = []

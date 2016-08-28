@@ -1,4 +1,3 @@
-import logging
 import random
 from datetime import datetime
 from math import floor, pi
@@ -14,7 +13,9 @@ from app.polygon_data import all_polygons
 from app.vector import Vector2D
 
 
-logger = logging.getLogger('ship.' + __name__)
+import logging
+logger = logging.getLogger('xlimb.' + __name__)
+logger_stat = logging.getLogger('stat.' + __name__)
 
 now = datetime.now
 _pi2 = pi * 2
@@ -99,7 +100,7 @@ class Ship(object):
         self.dead_reason = None
 
     def __str__(self):
-        return 'Ship: %s' % self.pk
+        return 'Ship: %s [%s]' % (self.pk, self.name)
 
     def set_pk(self, pk):
         self.pk = 's_%s' % pk
@@ -127,6 +128,8 @@ class Ship(object):
             self.dead_reason = reason
             if not self.lifetime:
                 self.lifetime = int((now() - self.starttime).total_seconds())
+            logger_stat.info('DeadReason: %s %s %s', self.lifetime, reason, self.name)
+
         if self.dead_step == -1 and to_dive is True:
             self.dead_step = 0
         elif self.dead_step == -1 and to_dive is False:
@@ -165,11 +168,12 @@ class Ship(object):
                     self.health -= damage
                     another_ship.health -= damage
                     if self.health <= 0:
-                        self.mark_as_dead(DeadReason.WORLD_COLLISION_BIRTH)
+                        self.mark_as_dead(DeadReason.WORLD_COLLISION_BIRTH, False)
+                        logger.warning('world_collision_birth %s was destroyed', self)
                     if another_ship.health <= 0:
-                        another_ship.mark_as_dead(DeadReason.WORLD_COLLISION_BIRTH)
+                        another_ship.mark_as_dead(DeadReason.WORLD_COLLISION_BIRTH, False)
+                        logger.warning('world_collision_birth %s was destroyed', another_ship)
 
-                    logger.debug('world_collision_birth one shid destroyed')
 
                     return []
 
@@ -205,7 +209,7 @@ class Ship(object):
         self.damage += damage_to_second
 
         logger.debug(
-            '%s (%s) %d....%s (%s) %d',
+            'Ramping info: %s (%s) %d....%s (%s) %d',
             self.ship_type, m1, damage_to_one,
             another_ship.ship_type, m2, damage_to_second
         )

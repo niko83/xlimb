@@ -13,7 +13,7 @@ server {
         listen 80;
         server_name www.xlimb.loc;
         location / {
-                root /home/niko/projects/roketz/src/www;
+                root /home/niko/projects/xlimb/src/www;
                 index index.html;
         }
 

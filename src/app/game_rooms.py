@@ -3,6 +3,8 @@ import json
 import app
 from app import constants
 from app.game_room import GameRoom
+import logging
+logger = logging.getLogger('xlimb.' + __name__)
 
 
 _rooms = []
@@ -54,7 +56,7 @@ class _Queue:
 
     def _run_stat(self):
 
-        print('[Q:%d, R:%d Bul:%d Bon:%d] fps:%d Traffic:%.1fMb Rooms:%s' % (
+        logger.info('[Q:%d, R:%d Bul:%d Bon:%d] fps:%d Traffic:%.1fMb Rooms:%s' % (
             self.count_q_players,
             self.count_active_players,
             sum(len(r.bullets) for r in _rooms),
@@ -62,10 +64,9 @@ class _Queue:
             1/app.constants.FRAME_INTERVAL,
             app.game_room.SUMMARY_TRAFFIC / 1024/1024,
             ', '.join("[%s/%s/%s]" % r.get_stat() for r in _rooms),
-        ), flush=True)
+        ))
 
-
-        self._handler2 = self._loop.call_later(5, self._run_stat)
+        self._handler2 = self._loop.call_later(20, self._run_stat)
 
     def _run(self):
         self.run()
