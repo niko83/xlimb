@@ -100,6 +100,10 @@ class GameRoom(object):
     def get_stat(self):
         return (len(self.clients), len(self.bullets), len(self.bonuses))
 
+    @property
+    def clients_without_bots(self):
+        return len(list(True for c in self.clients if not c.ship.name.startswith('Bot ')))
+
     def _run_regenerate_bonuses(self):
 
         for i in range(5):

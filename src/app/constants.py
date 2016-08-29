@@ -6,6 +6,8 @@ ROOT_DIR = os.path.join(os.path.dirname(__file__), '..')
 LOG_DIR = os.path.abspath(os.path.join( ROOT_DIR, '..', 'logs'))
 LOGGER_LEVEL = logging.INFO
 
+INTERVAL_SUMMARY_STAT = 20
+
 
 TEST_BOT = False
 DEBUG = True

@@ -66,7 +66,7 @@ class _Queue:
             ', '.join("[%s/%s/%s]" % r.get_stat() for r in _rooms),
         ))
 
-        self._handler2 = self._loop.call_later(20, self._run_stat)
+        self._handler2 = self._loop.call_later(constants.INTERVAL_SUMMARY_STAT, self._run_stat)
 
     def _run(self):
         self.run()
@@ -100,15 +100,25 @@ class _Queue:
 queue = _Queue()
 
 
-def get_free_room(loop):
+def get_free_room(loop, am_i_bot):
 
     if not _rooms:
         room = GameRoom(loop)
         _rooms.append(room)
         return room
 
-    sorted_rooms = sorted(_rooms, key=lambda r:  len(r.clients), reverse=True)
-    if len(sorted_rooms[-1].clients) >= constants.CLIENT_ROOM_LIMIT:
+    sorted_rooms = sorted(
+        _rooms,
+        key=lambda r:  (len(r.clients), r.clients_without_bots) if am_i_bot else (r.clients_without_bots, 0),
+        reverse=True
+    )
+
+    if am_i_bot:
+        len_players = len(sorted_rooms[-1].clients)
+    else:
+        len_players = sorted_rooms[-1].clients_without_bots
+
+    if len_players >= constants.CLIENT_ROOM_LIMIT:
         if len(_rooms) < constants.ROOMS_BY_CORE:
             room = GameRoom(loop)
             _rooms.append(room)
@@ -117,5 +127,5 @@ def get_free_room(loop):
             return None
 
     for room in sorted_rooms:
-        if len(room.clients) < constants.CLIENT_ROOM_LIMIT:
+        if (len(room.clients) if am_i_bot else room.clients_without_bots) < constants.CLIENT_ROOM_LIMIT:
             return room

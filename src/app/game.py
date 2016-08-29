@@ -1,14 +1,15 @@
+import logging
+
 from app.castomization import ship_type_to_ship
 from app.constants import DEBUG
 from app.game_room import Client
+from app.game_rooms import get_free_room, queue, restore_socket, get_room
 
-import logging
 
 logger = logging.getLogger('xlimb.' + __name__)
 
 
 def _join(loop, ws, data):
-    from app.game_rooms import get_free_room, queue, restore_socket
     data = data.split(':')
 
     try:
@@ -24,11 +25,11 @@ def _join(loop, ws, data):
         return
 
     if client_pk and restore_socket(client_pk, ws):
-        lggger.info('Restore socket for client_pk: %s', client_pk)
+        logger.info('Restore socket for client_pk: %s', client_pk)
         return
 
     ship = ship_type_to_ship[ship_type](name, weapon1, weapon2)
-    room = get_free_room(loop)
+    room = get_free_room(loop, am_i_bot=ship.is_bot)
 
     if room:
         room.add_listenter(Client(ws, ship, is_assigned_to_room=True))
@@ -47,7 +48,6 @@ def processing(loop, ws, msg_str):
         _join(loop, ws, data)
     elif command == 'cursor_pos':
         ship_pk, accelerator, vector, shot, shot2 = data.split('!')
-        from app.game_rooms import get_room
         room, _ = get_room(client_pk)
 
         if room:

@@ -102,6 +102,10 @@ class Ship(object):
     def __str__(self):
         return 'Ship: %s [%s]' % (self.pk, self.name)
 
+    @property
+    def is_bot(self):
+        return self.name.startswith('Bot ')
+
     def set_pk(self, pk):
         self.pk = 's_%s' % pk
         self._pk_short = pk
