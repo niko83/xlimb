@@ -267,7 +267,7 @@ def _gas(speed, my_obj, point, is_main_path=True, angle=None):
 
 def startBot():
     ws = websocket.WebSocket()
-    ws.connect('ws://127.0.0.1/ws/')
+    ws.connect('ws://127.0.0.1:8080/ws/')
     #  ws.connect('ws://www.xlimb.ru/ws/')
 
     viewport_data = {}
