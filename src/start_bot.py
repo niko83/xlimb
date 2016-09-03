@@ -496,8 +496,8 @@ def _ship_attack(viewport_data, msg):
         msg['direction'], angle = get_directions_correction(viewport_data['my_obj'], ship)
         if angle < math.pi/180 * 20:
             msg['weapon1'] = 1
-        if angle < math.pi/180 * 40:
-            msg['weapon2'] = 1
+        #  if angle < math.pi/180 * 40:
+            #  msg['weapon2'] = 1
         msg['gas'] = 1 if random.randint(0, 3) > 2 else 0
         return True
     return False

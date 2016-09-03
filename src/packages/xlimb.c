@@ -23,12 +23,10 @@ static PyObject* resolve_line(PyObject *self, PyObject *args)
         return NULL;
     }
 
-
-    helper_resolve_line(x1, y1, x2, y2, result);
-    if (result == 0 && result == 0){
-        return Py_BuildValue("(ss)", NULL, NULL);
+    if (helper_resolve_line(x1, y1, x2, y2, result)){
+        return Py_BuildValue("dd", result[0], result[1]);
     }else{
-        return Py_BuildValue("dd", result[0], result[0]);
+        return Py_BuildValue("(ss)", NULL, NULL);
     }
 }
 

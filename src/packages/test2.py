@@ -5,7 +5,9 @@ if __debug__ is not True:
 
 assert xlimb_helper.distance((1,1), (2,2)) == 1.4142135623730951
 print('OK distance')
-assert xlimb_helper.resolve_line((0,0), (2,2)) == (1.0, 1.0)
+assert xlimb_helper.resolve_line((1,1), (100,100)) == (1, 0)
+print('OK resolve_line')
+assert xlimb_helper.resolve_line((1,1), (1,100)) == (None, None)
 print('OK resolve_line')
 assert xlimb_helper.get_polygon_idx_collision(100.0, 1500.0) == 13
 print('OK get_polygon_idx_collision')
