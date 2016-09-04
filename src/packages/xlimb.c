@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "helper.h"
 #include "polygon.h"
-/* #include "bullet.h" */
+#include "bullet.h"
 
 
 
@@ -41,23 +41,23 @@ static PyObject* get_polygon_idx_collision(PyObject *self, PyObject *args)
     return Py_BuildValue("i", polygon_get_polygon_idx_collision(x, y));
 }
 
-/* static PyObject* calculate_position(PyObject *self, PyObject *args) */
-/* { */
-    /* double FRAME_INTERVAL;  */
-    /* PyObject * obj; */
+static PyObject* calculate_position(PyObject *self, PyObject *args)
+{
+    double FRAME_INTERVAL; 
+    PyObject * obj;
 
-    /* if (!PyArg_ParseTuple(args, "dO", &FRAME_INTERVAL, &obj)) { */
-        /* return NULL; */
-    /* } */
-    /* bullet_calculate_position(FRAME_INTERVAL, obj); */
-    /* return Py_BuildValue("s", NULL); */
-/* } */
+    if (!PyArg_ParseTuple(args, "dO", &FRAME_INTERVAL, &obj)) {
+        return NULL;
+    }
+    bullet_calculate_position(FRAME_INTERVAL, obj);
+    return Py_BuildValue("s", NULL);
+}
 
 static PyMethodDef xlimb_helper_methods[] = { 
     {"distance", distance, METH_VARARGS, "docs"},
     {"resolve_line", resolve_line, METH_VARARGS, "docs"},
     {"get_polygon_idx_collision",  get_polygon_idx_collision, METH_VARARGS, "docs"},
-    /* {"calculate_position",  calculate_position, METH_VARARGS, "docs"}, */
+    {"calculate_position",  calculate_position, METH_VARARGS, "docs"},
     {NULL, NULL, 0, NULL}
 };
 

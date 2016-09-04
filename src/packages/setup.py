@@ -60,7 +60,7 @@ class MakeData(Command):
         for ys in polygon_cell:
             cell_data.append('{%s}' % (', '.join('1' if y else '0' for y in ys)))
 
-        ph4 = 'int polygon_cell[][%s] = {\n%s};\n' % (
+        ph4 = 'static int polygon_cell[][%s] = {\n%s};\n' % (
             len(polygon_cell[0]),
             ', \n'.join(cell_data)
         )
@@ -83,6 +83,7 @@ setup(
             'xlimb.c',
             'helper.c',
             'polygon.c',
+            'bullet.c',
         ])
     ],
     cmdclass={

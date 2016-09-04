@@ -2,12 +2,37 @@
 #include "stdlib.h"
 #include "helper.h"
 #include "polygon_data.c"
-#include "polygon_data.h"
 #include "polygon.h"
 #include "bullet.h"
  
 
 const int CELL_STEP = 60;
+
+double vector_angle(double x, double y){
+    if (x == 0){
+        if (y == 0){
+            return 0;
+        } else if (y > 0){
+            return M_PI/2;
+        } else {
+            return M_PI * 3 / 2;
+        }
+    }
+    double angle = fabs(atan(y/x));
+    if(x < 0){
+        if(y < 0){
+            return M_PI + angle;
+        } else {
+            return M_PI - angle;
+        }
+    } else {
+        if(y < 0){
+            return 2 * M_PI - angle;
+        } else {
+            return angle;
+        }
+    }
+}
 
 double vector_get_angle(double x, double y){
     
@@ -21,7 +46,7 @@ double vector_get_angle(double x, double y){
         }
     }
 
-    double angle = abs(atan(y / x));
+    double angle = fabs(atan(y / x));
 
     if (x < 0){
         if (y < 0){
@@ -39,19 +64,25 @@ double vector_get_angle(double x, double y){
 }
 
 
-int get_intersection_angle(int p1x, int p1y, int p2x, int p2y, int p3x, int p3y, int p4x, int p4y, double *angle_intersection){
+int get_intersection_angle(
+        double p1x, double p1y,
+        double p2x, double p2y,
+        int p3x, int p3y,
+        int p4x, int p4y, 
+        double *angle_intersection
+){
     
     double x;
 
     double line1[2], line2[2];
-    helper_resolve_line(p1x, p1y, p2x, p2y, line1);
-    helper_resolve_line(p3x, p3y, p4x, p4y, line2);
+    int status1 = helper_resolve_line(p1x, p1y, p2x, p2y, line1);
+    int status2 = helper_resolve_line(p3x, p3y, p4x, p4y, line2);
 
     if (line1[0] == line2[0]){
         return 0;
-    } else if (line1[0] == 0 && line1[1] == 0){
+    } else if (status1 == 0){
         x = (double) p1x;
-    } else if (line2[0] == 0 && line2[1]==0){
+    } else if (status2 == 0){
         x = (double) p3x;
     } else {
         x = (line2[1] - line1[1])/(line1[0] - line2[0]);
@@ -76,7 +107,7 @@ int get_intersection_angle(int p1x, int p1y, int p2x, int p2y, int p3x, int p3y,
     return 0;
 }
 
-int get_angle_collision(double x1, double y1, double x2, double y2, int polygon_idx, double *result){
+int get_angle_collision(double x1, double y1, double x2, double y2, int polygon_idx, double *angle){
 
     int k;
     int cnt = all_polygons[polygon_idx].el_count;
@@ -94,8 +125,7 @@ int get_angle_collision(double x1, double y1, double x2, double y2, int polygon_
             py_prev = (*all_polygons[polygon_idx].mtp+k-1)->y; 
         }
            
-        double result;
-        if (get_intersection_angle(x1, y1, x2, y2, px, py, px_prev, py_prev, &result) == 1){
+        if (get_intersection_angle(x1, y1, x2, y2, px, py, px_prev, py_prev, angle)){
             return 1;
         }
     }
@@ -109,11 +139,6 @@ void bullet_calculate_position(
         PyObject * obj
 ){
     double life_limit = PyFloat_AsDouble(PyObject_GetAttrString(obj, "life_limit"));
-
-    if (life_limit < FRAME_INTERVAL){
-        PyObject_SetAttrString(obj, "life_limit", PyFloat_FromDouble(-1));
-        return;
-    }
     PyObject_SetAttrString(obj, "life_limit", PyFloat_FromDouble(life_limit-FRAME_INTERVAL));
 
     double able_to_make_tracing = PyFloat_AsDouble(PyObject_GetAttrString(obj, "able_to_make_tracing"));
@@ -130,11 +155,11 @@ void bullet_calculate_position(
     }
 
     PyObject * current_position = PyObject_GetAttrString(obj, "current_position");
-    double current_position_x = PyFloat_AsDouble(PyObject_GetAttrString(current_position, "x"));
-    double current_position_y = PyFloat_AsDouble(PyObject_GetAttrString(current_position, "y"));
+    double cpx = PyFloat_AsDouble(PyObject_GetAttrString(current_position, "x"));
+    double cpy = PyFloat_AsDouble(PyObject_GetAttrString(current_position, "y"));
 
-    double candidat_position_x = current_position_x + current_speed_x * FRAME_INTERVAL;
-    double candidat_position_y = current_position_y - current_speed_y * FRAME_INTERVAL;
+    double candidat_position_x = cpx + current_speed_x * FRAME_INTERVAL;
+    double candidat_position_y = cpy - current_speed_y * FRAME_INTERVAL;
 
     int approx_x = floor(candidat_position_x/CELL_STEP);
     int approx_y = floor(candidat_position_y/CELL_STEP);
@@ -143,7 +168,10 @@ void bullet_calculate_position(
     PyObject_SetAttrString(obj, "approx_y", PyLong_FromLong(approx_y));
 
     int polygon_idx = 0;
-    if (approx_x < 100000 && approx_y < 100000){
+    if (
+            approx_x < sizeof(polygon_cell)/sizeof(polygon_cell[0]) && 
+            approx_y < sizeof(polygon_cell[0])/sizeof(polygon_cell[0][0])
+    ){
         if (polygon_cell[approx_x][approx_y] == 1){
             polygon_idx = polygon_get_polygon_idx_collision(candidat_position_x, candidat_position_y);
         }
@@ -161,11 +189,11 @@ void bullet_calculate_position(
 
     double angle;
     if (polygon_idx && ricochet==1){
-        if (get_angle_collision(current_position_x, current_position_y, candidat_position_x, candidat_position_y, polygon_idx, &angle) == 1){
-            /* length=self.current_speed.length, */
-            /* angle=angle*2 + self.current_speed.angle() */
-            PyObject_SetAttrString(current_speed, "x", PyFloat_FromDouble(400));
-            PyObject_SetAttrString(current_speed, "y", PyFloat_FromDouble(400));
+        if (get_angle_collision(cpx, cpy, candidat_position_x, candidat_position_y, polygon_idx, &angle)){
+            angle=angle*2 + vector_angle(current_speed_x, current_speed_y);
+            double length = sqrt(pow(current_speed_x, 2) + pow(current_speed_y, 2));
+            PyObject_SetAttrString(current_speed, "x", PyFloat_FromDouble(cos(angle) * length));
+            PyObject_SetAttrString(current_speed, "y", PyFloat_FromDouble(sin(angle) * length));
         }else{
             PyObject_SetAttrString(obj, "life_limit", PyFloat_FromDouble(-1));
         }
