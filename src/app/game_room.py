@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from math import floor
 
 import numpy
+from xlimb_helper import calculate_position
 
 import app
 from app.castomization import (
@@ -227,13 +228,12 @@ class GameRoom(object):
 
             tracer_bullets = []
 
-            #  FI = app.constants.FRAME_INTERVAL
+            FI = app.constants.FRAME_INTERVAL
             for idx, bullet in enumerate(self.bullets):
                 if bullet.life_limit < 0:
                     self.bullets.pop(idx)
                     continue
-                bullet.calculate_position()
-                #  calculate_position(FI, bullet)
+                calculate_position(FI, bullet)
                 tracer_bullets += bullet.make_tracer()
 
             self.bullets += tracer_bullets
