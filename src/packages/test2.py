@@ -32,8 +32,6 @@ class A(object):
 a = A(111)
 xlimb_helper.calculate_position(0.002, a)
 
-#  print(a.life_limit)
-#  assert a.life_limit == 99.998
 print('OK calculate position')
 #  print(a.life_limit)
 #  print(a.able_to_make_tracing)

@@ -138,25 +138,43 @@ void bullet_calculate_position(
         double FRAME_INTERVAL,
         PyObject * obj
 ){
-    double life_limit = PyFloat_AsDouble(PyObject_GetAttrString(obj, "life_limit"));
-    PyObject_SetAttrString(obj, "life_limit", PyFloat_FromDouble(life_limit-FRAME_INTERVAL));
 
-    double able_to_make_tracing = PyFloat_AsDouble(PyObject_GetAttrString(obj, "able_to_make_tracing"));
+    PyObject * life_limit_py = PyObject_GetAttrString(obj, "life_limit");
+    Py_DECREF(life_limit_py);
+    double life_limit = PyFloat_AsDouble(life_limit_py);
+
+    PyObject * new_life_limit = PyFloat_FromDouble(life_limit-FRAME_INTERVAL);
+    PyObject_SetAttrString(obj, "life_limit", new_life_limit);
+    Py_DECREF(new_life_limit);
+
+
+    PyObject * prev_able_to_make = PyObject_GetAttrString(obj, "able_to_make_tracing");
+    double able_to_make_tracing = PyFloat_AsDouble(prev_able_to_make);
     if (able_to_make_tracing > -100){
-        PyObject_SetAttrString(obj, "able_to_make_tracing", PyFloat_FromDouble(able_to_make_tracing+FRAME_INTERVAL));
+        Py_DECREF(prev_able_to_make);
+        PyObject * new_able_to_make = PyFloat_FromDouble(able_to_make_tracing+FRAME_INTERVAL);
+        PyObject_SetAttrString(obj, "able_to_make_tracing", new_able_to_make);
+        Py_DECREF(new_able_to_make);
     }
 
     PyObject * current_speed = PyObject_GetAttrString(obj, "current_speed");
 
-    double current_speed_x = PyFloat_AsDouble(PyObject_GetAttrString(current_speed, "x"));
-    double current_speed_y = PyFloat_AsDouble(PyObject_GetAttrString(current_speed, "y"));
+    PyObject * current_speed_x_py =  PyObject_GetAttrString(current_speed, "x");
+    PyObject * current_speed_y_py =  PyObject_GetAttrString(current_speed, "y");
+    double current_speed_x = PyFloat_AsDouble(current_speed_x_py);
+    double current_speed_y = PyFloat_AsDouble(current_speed_y_py);
     if (current_speed_x == 0 && current_speed_y == 0){
         return;
     }
 
+
     PyObject * current_position = PyObject_GetAttrString(obj, "current_position");
-    double cpx = PyFloat_AsDouble(PyObject_GetAttrString(current_position, "x"));
-    double cpy = PyFloat_AsDouble(PyObject_GetAttrString(current_position, "y"));
+
+    PyObject * cpx_py = PyObject_GetAttrString(current_position, "x");
+    PyObject * cpy_py = PyObject_GetAttrString(current_position, "y");
+    double cpx = PyFloat_AsDouble(cpx_py);
+    double cpy = PyFloat_AsDouble(cpy_py);
+
 
     double candidat_position_x = cpx + current_speed_x * FRAME_INTERVAL;
     double candidat_position_y = cpy - current_speed_y * FRAME_INTERVAL;
@@ -164,8 +182,14 @@ void bullet_calculate_position(
     int approx_x = floor(candidat_position_x/CELL_STEP);
     int approx_y = floor(candidat_position_y/CELL_STEP);
 
-    PyObject_SetAttrString(obj, "approx_x", PyLong_FromLong(approx_x));
-    PyObject_SetAttrString(obj, "approx_y", PyLong_FromLong(approx_y));
+    PyObject * approx_x_py = PyLong_FromLong(approx_x);
+    PyObject * approx_y_py = PyLong_FromLong(approx_y);
+    Py_DECREF(PyObject_GetAttrString(obj, "approx_x"));
+    Py_DECREF(PyObject_GetAttrString(obj, "approx_y"));
+    PyObject_SetAttrString(obj, "approx_x", approx_x_py);
+    PyObject_SetAttrString(obj, "approx_y", approx_y_py);
+    Py_DECREF(approx_x_py);
+    Py_DECREF(approx_y_py);
 
     int polygon_idx = 0;
     if (
@@ -177,13 +201,21 @@ void bullet_calculate_position(
         }
     } else {
         // fallback IndexError
-        PyObject_SetAttrString(obj, "approx_x", PyLong_FromLong(0));
-        PyObject_SetAttrString(obj, "approx_y", PyLong_FromLong(0));
+        PyObject * zero_x = PyLong_FromLong(0);
+        PyObject * zero_y = PyLong_FromLong(0);
+        Py_DECREF(PyObject_GetAttrString(obj, "approx_x"));
+        Py_DECREF(PyObject_GetAttrString(obj, "approx_y"));
+        PyObject_SetAttrString(obj, "approx_x", zero_x);
+        PyObject_SetAttrString(obj, "approx_y", zero_y);
+        Py_DECREF(zero_x);
+        Py_DECREF(zero_y);
     }
 
     int ricochet = PyLong_AsLong(PyObject_GetAttrString(obj, "ricochet"));
     if (polygon_idx && ricochet==0){
-        PyObject_SetAttrString(obj, "life_limit", PyFloat_FromDouble(-1));
+        PyObject * minus_py = PyFloat_FromDouble(-1);
+        PyObject_SetAttrString(obj, "life_limit", minus_py);
+        Py_DECREF(minus_py);
         return;
     }
 
@@ -192,14 +224,29 @@ void bullet_calculate_position(
         if (get_angle_collision(cpx, cpy, candidat_position_x, candidat_position_y, polygon_idx, &angle)){
             angle=angle*2 + vector_angle(current_speed_x, current_speed_y);
             double length = sqrt(pow(current_speed_x, 2) + pow(current_speed_y, 2));
-            PyObject_SetAttrString(current_speed, "x", PyFloat_FromDouble(cos(angle) * length));
-            PyObject_SetAttrString(current_speed, "y", PyFloat_FromDouble(sin(angle) * length));
+            PyObject * c_speed_x_py = PyFloat_FromDouble(cos(angle) * length);
+            PyObject * c_speed_y_py = PyFloat_FromDouble(sin(angle) * length);
+            PyObject_SetAttrString(current_speed, "x", c_speed_x_py);
+            PyObject_SetAttrString(current_speed, "y", c_speed_y_py);
+            Py_DECREF(current_speed_x_py);
+            Py_DECREF(current_speed_y_py);
+            Py_DECREF(c_speed_x_py);
+            Py_DECREF(c_speed_y_py);
         }else{
-            PyObject_SetAttrString(obj, "life_limit", PyFloat_FromDouble(-1));
+            PyObject * minus_py = PyFloat_FromDouble(-1);
+            PyObject_SetAttrString(obj, "life_limit", minus_py);
+            Py_DECREF(minus_py);
         }
     }
 
-    PyObject_SetAttrString(current_position, "x", PyFloat_FromDouble(candidat_position_x));
-    PyObject_SetAttrString(current_position, "y", PyFloat_FromDouble(candidat_position_y));
+    PyObject * candidat_position_x_py = PyFloat_FromDouble(candidat_position_x);
+    PyObject * candidat_position_y_py = PyFloat_FromDouble(candidat_position_y);
+    PyObject_SetAttrString(current_position, "x", candidat_position_x_py);
+    PyObject_SetAttrString(current_position, "y", candidat_position_y_py);
+    Py_DECREF(candidat_position_x_py);
+    Py_DECREF(candidat_position_y_py);
+    Py_DECREF(cpx_py);
+    Py_DECREF(cpy_py);
+
     return;
 }
