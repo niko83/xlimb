@@ -2,11 +2,13 @@ import json
 import random
 import struct
 import uuid
+import logging
 from datetime import datetime, timedelta
 from math import floor
 
 import numpy
 from xlimb_helper import calculate_position
+from app.helper_x import calculate_position as X
 
 import app
 from app.castomization import (
@@ -15,6 +17,7 @@ from app.castomization import (
 )
 from app.constants import VIEWPORT_SIZE, MAP_SIZE, MAP_SIZE_APPROX, CELL_STEP, CLIENT_TIMEOUT, CLIENT_ROOM_LIMIT
 from app.vector import Vector2D
+logger = logging.getLogger('xlimb.' + __name__)
 
 
 now = datetime.now
@@ -234,6 +237,7 @@ class GameRoom(object):
                     self.bullets.pop(idx)
                     continue
                 calculate_position(FI, bullet)
+                #  X(bullet)
                 tracer_bullets += bullet.make_tracer()
 
             self.bullets += tracer_bullets

@@ -147,34 +147,38 @@ void bullet_calculate_position(
     PyObject_SetAttrString(obj, "life_limit", new_life_limit);
     Py_DECREF(new_life_limit);
 
-
     PyObject * prev_able_to_make = PyObject_GetAttrString(obj, "able_to_make_tracing");
+    Py_DECREF(prev_able_to_make);
     double able_to_make_tracing = PyFloat_AsDouble(prev_able_to_make);
     if (able_to_make_tracing > -100){
-        Py_DECREF(prev_able_to_make);
         PyObject * new_able_to_make = PyFloat_FromDouble(able_to_make_tracing+FRAME_INTERVAL);
         PyObject_SetAttrString(obj, "able_to_make_tracing", new_able_to_make);
         Py_DECREF(new_able_to_make);
     }
 
     PyObject * current_speed = PyObject_GetAttrString(obj, "current_speed");
+    Py_DECREF(current_speed);
 
     PyObject * current_speed_x_py =  PyObject_GetAttrString(current_speed, "x");
+    Py_DECREF(current_speed_x_py);
     PyObject * current_speed_y_py =  PyObject_GetAttrString(current_speed, "y");
+    Py_DECREF(current_speed_y_py);
+
     double current_speed_x = PyFloat_AsDouble(current_speed_x_py);
     double current_speed_y = PyFloat_AsDouble(current_speed_y_py);
     if (current_speed_x == 0 && current_speed_y == 0){
         return;
     }
 
-
     PyObject * current_position = PyObject_GetAttrString(obj, "current_position");
+    Py_DECREF(current_position);
 
     PyObject * cpx_py = PyObject_GetAttrString(current_position, "x");
-    PyObject * cpy_py = PyObject_GetAttrString(current_position, "y");
+    Py_DECREF(cpx_py);
     double cpx = PyFloat_AsDouble(cpx_py);
+    PyObject * cpy_py = PyObject_GetAttrString(current_position, "y");
+    Py_DECREF(cpy_py);
     double cpy = PyFloat_AsDouble(cpy_py);
-
 
     double candidat_position_x = cpx + current_speed_x * FRAME_INTERVAL;
     double candidat_position_y = cpy - current_speed_y * FRAME_INTERVAL;
@@ -211,7 +215,10 @@ void bullet_calculate_position(
         Py_DECREF(zero_y);
     }
 
-    int ricochet = PyLong_AsLong(PyObject_GetAttrString(obj, "ricochet"));
+    PyObject * ricochet_py = PyObject_GetAttrString(obj, "ricochet");
+    Py_DECREF(ricochet_py);
+    int ricochet = PyLong_AsLong(ricochet_py);
+
     if (polygon_idx && ricochet==0){
         PyObject * minus_py = PyFloat_FromDouble(-1);
         PyObject_SetAttrString(obj, "life_limit", minus_py);
@@ -228,8 +235,6 @@ void bullet_calculate_position(
             PyObject * c_speed_y_py = PyFloat_FromDouble(sin(angle) * length);
             PyObject_SetAttrString(current_speed, "x", c_speed_x_py);
             PyObject_SetAttrString(current_speed, "y", c_speed_y_py);
-            Py_DECREF(current_speed_x_py);
-            Py_DECREF(current_speed_y_py);
             Py_DECREF(c_speed_x_py);
             Py_DECREF(c_speed_y_py);
         }else{
@@ -245,8 +250,6 @@ void bullet_calculate_position(
     PyObject_SetAttrString(current_position, "y", candidat_position_y_py);
     Py_DECREF(candidat_position_x_py);
     Py_DECREF(candidat_position_y_py);
-    Py_DECREF(cpx_py);
-    Py_DECREF(cpy_py);
 
     return;
 }

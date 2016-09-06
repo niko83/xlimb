@@ -49,7 +49,9 @@ static PyObject* calculate_position(PyObject *self, PyObject *args)
     if (!PyArg_ParseTuple(args, "dO", &FRAME_INTERVAL, &obj)) {
         return NULL;
     }
+
     bullet_calculate_position(FRAME_INTERVAL, obj);
+
     return Py_BuildValue("s", NULL);
 }
 
