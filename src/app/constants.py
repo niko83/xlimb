@@ -44,3 +44,11 @@ class DeadReason:
     WORLD_COLLISION = 'world_collision'
     WORLD_COLLISION_BIRTH = 'world_collision_birth'
     RAMPING = 'ramping'
+
+
+BOTS = [
+    'Joe',
+    'Boris',
+    'Alex',
+    'Katrin',
+]

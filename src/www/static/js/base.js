@@ -372,6 +372,21 @@ function draw_frame(){
   })
 
   $.each(ships_gl, function(id, ship){
+    if (ship[5] == -1){
+      var x = ship[2] + diff_x
+      var y = ship[3] + diff_y
+       var weight = ship[7]%100
+      var color = Math.floor(ship[7]/100)
+
+      ctx.fillStyle = '#'+color+'70'
+
+      ctx.fillRect(
+          x-weight/2, y-35, weight, 2
+      )
+    }
+  })
+
+  $.each(ships_gl, function(id, ship){
       drawShip(ship)
   })
 
@@ -493,11 +508,12 @@ function parsing_blob(msg){
     ships_gl = []
     $('.name_title').hide()
 
-    var chunk = 7
+    var chunk = 8
     for (i=3,j=msg.length; i<j; i+=chunk) {
         tmp = msg.slice(i, i+chunk)
         tmp[2] += viewport_x
         tmp[3] += viewport_y 
+        tmp[7] /= 2
         ships_gl.push(tmp)
 
         var pk = 's_'+ tmp[0]

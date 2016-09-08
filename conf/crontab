@@ -1,2 +1,2 @@
 @reboot  /home/ship/venv/bin/python /home/ship/app/src/server.py 8080 >> /home/ship/app/logs/xlimb_output.log 2>&1
-@reboot  sleep 6 && /home/ship/venv/bin/python /home/ship/app/src/start_bot.py 4 >> /home/ship/app/logs/start_bot.log 2>&1
+@reboot  sleep 10 && /home/ship/venv/bin/python /home/ship/app/src/start_bot.py 4 >> /home/ship/app/logs/start_bot.log 2>&1

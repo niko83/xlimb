@@ -5,7 +5,7 @@ from math import floor, pi
 from xlimb_helper import distance, get_polygon_idx_collision
 
 import app
-from app.constants import MU, G, G_DIVE, MAP_SIZE, CELL_STEP, DeadReason
+from app.constants import MU, G, G_DIVE, MAP_SIZE, CELL_STEP, DeadReason, BOTS
 from app.engine import Engine
 from app.gun import Gun
 from app.helper import in_polygon_info, get_polygon_info,  get_angle_collision, polygon_cell
@@ -104,12 +104,7 @@ class Ship(object):
 
     @property
     def is_bot(self):
-        return self.name in [
-            'Joe',
-            'Boris',
-            'Alex',
-            'Katrin',
-        ]
+        return self.name in BOTS
 
     def set_pk(self, pk):
         self.pk = 's_%s' % pk
@@ -126,6 +121,7 @@ class Ship(object):
             (self.current_route % (_pi2)) * 100,
             self.dead_step,
             self.ship_type,
+            self.health,
         )
 
     @property
