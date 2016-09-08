@@ -275,7 +275,12 @@ def startBot():
     t = threading.Thread(target=bot_control, args=(ws, viewport_data))
     t.start()
 
-    name = 'Bot %s' % random.randint(0, 1000)
+    name = random.choice([
+        'Joe',
+        'Boris',
+        'Alex',
+        'Katrin',
+    ])
 
     while True:
         sleep(1)

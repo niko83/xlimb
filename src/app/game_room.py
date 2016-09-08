@@ -15,7 +15,10 @@ from app.castomization import (
     HealthBonusMega, HealthBonusSmall, HealthBonusMedium,
     Bullet1BonusSmall, Bullet2BonusSmall, FuelBonusSmall
 )
-from app.constants import VIEWPORT_SIZE, MAP_SIZE, MAP_SIZE_APPROX, CELL_STEP, CLIENT_TIMEOUT, CLIENT_ROOM_LIMIT
+from app.constants import (
+    VIEWPORT_SIZE, MAP_SIZE, MAP_SIZE_APPROX, CELL_STEP,
+    CLIENT_TIMEOUT, CLIENT_ROOM_LIMIT, INTERVAL_STAT_NOTIFICATION,
+)
 from app.vector import Vector2D
 logger = logging.getLogger('xlimb.' + __name__)
 
@@ -205,7 +208,7 @@ class GameRoom(object):
                 _up_summary_trafic(len(msg))
                 client.ws.send_str(msg)
 
-        self._handler2 = self._loop.call_later(1, self._run_ship_infos)
+        self._handler2 = self._loop.call_later(INTERVAL_STAT_NOTIFICATION, self._run_ship_infos)
 
     def has_ship_intersection(self, point_map, ship):
         x = [p.x for p in ship.current_polygon]

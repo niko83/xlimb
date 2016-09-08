@@ -7,6 +7,8 @@ from app.polygon_data import all_polygons
 from app.helper import get_angle_collision, polygon_cell
 
 
+
+
 def get_polygon_info(polygon):
     xp = [p.x for p in polygon]
     yp = [p.y for p in polygon]
@@ -64,6 +66,10 @@ def get_polygon_idx_collision(x, y):
             return idx
     return False
 
+
+#  from xlimb_helper import get_polygon_idx_collision
+#  from xlimb_helper import resolve_line, get_polygon_idx_collision
+#  from xlimb_helper import distance, get_polygon_idx_collision
 
 def calculate_position(self):
 

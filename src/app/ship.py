@@ -104,7 +104,12 @@ class Ship(object):
 
     @property
     def is_bot(self):
-        return self.name.startswith('Bot ')
+        return self.name in [
+            'Joe',
+            'Boris',
+            'Alex',
+            'Katrin',
+        ]
 
     def set_pk(self, pk):
         self.pk = 's_%s' % pk
