@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import gc
+gc.disable()
 from sys import argv
 
 from aiohttp import web
