@@ -51,4 +51,11 @@ BOTS = [
     'Boris',
     'Alex',
     'Katrin',
+    'Ivan',
+    'Sonya',
+    'Leo',
+    'Lucas',
+    'Luke',
+    'James',
+    'Eva',
 ]

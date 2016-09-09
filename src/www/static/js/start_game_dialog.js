@@ -5,8 +5,6 @@ $(document).ready(function(){
   $go_button = $('.go')
   setInterval(limb_go_button(), 130)
   bind_go_button()
-  bind_settings_link()
-  bind_ship_tab()
   bind_go_key()
   bind_leave_queue_key()
 
@@ -37,6 +35,9 @@ $(document).ready(function(){
     $('.color_block input[type=radio]').on('change', function(){
       change_ship_log($(this).val())
     })
+
+    bind_settings_link()
+    bind_ship_tab()
 })
 
 
@@ -151,12 +152,8 @@ function bind_go_key(){
 function change_ship_log(ship_idx){
   $('.ship_icon')
     .removeClass('ship10')
-    .removeClass('ship20')
-    .removeClass('ship21')
-    .removeClass('ship22')
-    .removeClass('ship30')
-    .removeClass('ship31')
-    .removeClass('ship32')
+    .removeClass('ship20').removeClass('ship21').removeClass('ship22')
+    .removeClass('ship30').removeClass('ship31').removeClass('ship32')
     .addClass('ship' + ship_idx)
 }
 
@@ -201,12 +198,15 @@ function show_dialog_and_fill_values(){
     $('.startGameDialog').show()
     $('.key_helper').hide()
 
-    var active_cls = 'ship1'
     var last_ship_type = getCookie('last_ship_type')
     if (last_ship_type){
-      active_cls='ship' + last_ship_type[0]
+      var active_cls = 'ship' + last_ship_type[0]
+    }else{
+      var active_cls = 'ship2'
+      last_ship_type = '21'
     }
     show_tab(active_cls)
+    console.info(last_ship_type)
 
     change_ship_log(last_ship_type)
 

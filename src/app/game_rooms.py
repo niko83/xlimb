@@ -1,7 +1,9 @@
 import json
+import gc
 
 import app
 from app import constants
+import datetime
 from app.game_room import GameRoom
 import logging
 logger = logging.getLogger('xlimb.' + __name__)
@@ -54,6 +56,10 @@ class _Queue:
                 }
             }))
 
+    def _gc_collect(self):
+        gc.collect()
+        self._handler3 = self._loop.call_later(3600, self._gc_collect)
+
     def _run_stat(self):
 
         logger.info('[Q:%d, R:%d Bul:%d Bon:%d] fps:%d Traffic:%.1fMb Rooms:%s' % (
@@ -75,6 +81,7 @@ class _Queue:
     def start(self):
         self._handler = self._loop.call_later(0, self._run)
         self._handler2 = self._loop.call_later(1, self._run_stat)
+        self._handler3 = self._loop.call_later(20, self._gc_collect)
 
     @property
     def count_active_players(self):

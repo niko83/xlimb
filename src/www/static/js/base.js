@@ -375,14 +375,32 @@ function draw_frame(){
     if (ship[5] == -1){
       var x = ship[2] + diff_x
       var y = ship[3] + diff_y
-       var weight = ship[7]%100
-      var color = Math.floor(ship[7]/100)
+      var weight = ship[7]%100
 
-      ctx.fillStyle = '#'+color+'70'
 
-      ctx.fillRect(
-          x-weight/2, y-35, weight, 2
-      )
+    if(ship[7] < 30){
+      var colors = ['#f00', '#700', '#300']
+    } else if(ship[7] < 50){
+      var colors = ['#ff0', '#770', '#330']
+    } else {
+      var colors = ['#0f0', '#070', '#030']
+    }
+    
+
+      ctx.fillStyle = colors[0]
+      ctx.fillRect(x-weight/2, y-36, weight, 1)
+      ctx.fillStyle = colors[1] 
+      ctx.fillRect(x-weight/2, y-35, weight, 1)
+      ctx.fillStyle = colors[2] 
+      ctx.fillRect(x-weight/2, y-34, weight, 1)
+
+      var count_star = Math.floor(ship[7]/100)
+      ctx.fillStyle = '#070'
+      var first = (count_star * 3 + (count_star - 1)*3) /2
+      while(count_star>0){
+        ctx.fillRect(x+first-count_star*3-(count_star-1)*3, y+45, 3, 3)
+        count_star--;
+      }
     }
   })
 

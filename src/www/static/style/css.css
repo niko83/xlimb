@@ -227,7 +227,7 @@ body {
  .name_title {
      position: absolute;
      width: 120px; 
-     color: whitesmoke;
+     color: #999;
      font-weight: normal;
      font-size: 12px;
      height: 12px;

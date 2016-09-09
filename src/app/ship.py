@@ -173,10 +173,10 @@ class Ship(object):
                     self.health -= damage
                     another_ship.health -= damage
                     if self.health <= 0:
-                        self.mark_as_dead(DeadReason.WORLD_COLLISION_BIRTH, False)
+                        self.mark_as_dead(DeadReason.WORLD_COLLISION_BIRTH, to_dive=False)
                         logger.warning('world_collision_birth %s was destroyed', self)
                     if another_ship.health <= 0:
-                        another_ship.mark_as_dead(DeadReason.WORLD_COLLISION_BIRTH, False)
+                        another_ship.mark_as_dead(DeadReason.WORLD_COLLISION_BIRTH, to_dive=False)
                         logger.warning('world_collision_birth %s was destroyed', another_ship)
 
 
@@ -264,7 +264,7 @@ class Ship(object):
         else:
             return []
 
-        damage = 0 if self.immortality else object2d.health
+        damage = max(0, object2d.health) if self.immortality else object2d.health
 
         health_before = self.health
         self.health += damage
@@ -471,8 +471,6 @@ class Ship(object):
             x=self.candidat_position.x,
             y=self.candidat_position.y,
         )
-        #  self.approx_x = floor(self.current_position.x/CELL_STEP)
-        #  self.approx_y = floor(self.current_position.y/CELL_STEP)
 
         self.current_polygon = [
             Vector2D(

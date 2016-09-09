@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import gc
 gc.disable()
+gc.set_debug(gc.DEBUG_STATS)
 from sys import argv
 
 from aiohttp import web
