@@ -137,8 +137,8 @@ class Ship(object):
 
         if self.dead_step == -1 and to_dive is True:
             self.dead_step = 0
-        elif self.dead_step == -1 and to_dive is False:
-            self.dead_step = 1
+        elif self.dead_step in [-1, 0] and to_dive is False:
+            self.dead_step = 20 * app.constants.FRAME_INTERVAL  # start implosim and fire
 
     def has_ramping(self, another_ship):
 
@@ -365,7 +365,6 @@ class Ship(object):
         if polygon:
             if self.dead_step == 0:
                 self.mark_as_dead(to_dive=False)
-            self.dead_step += 20 * app.constants.FRAME_INTERVAL  # start implosim and fire
             return
 
         self.current_position.reinit(
