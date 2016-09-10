@@ -121,7 +121,7 @@ class Ship(object):
             (self.current_route % (_pi2)) * 100,
             self.dead_step,
             self.ship_type,
-            self.health,
+            min(self.health, 2**15-1),
         )
 
     @property

@@ -377,7 +377,11 @@ class GameRoom(object):
 
             client.ws.send_bytes(struct.pack('h'*(len(bin_data_bullets)+3), 10, bckg_x, bckg_y, *map(int, bin_data_bullets)))
             client.ws.send_bytes(struct.pack('h'*(len(bin_data_bonuses)+3), 20, bckg_x, bckg_y, *map(int, bin_data_bonuses)))
-            client.ws.send_bytes(struct.pack('h'*(len(bin_data_ships)+3), 30, bckg_x, bckg_y, *map(int, bin_data_ships)))
+            try:
+                client.ws.send_bytes(struct.pack('h'*(len(bin_data_ships)+3), 30, bckg_x, bckg_y, *map(int, bin_data_ships)))
+            except:
+                logger.exception("%s, ", bin_data_ships)
+
 
             """
             #  polygon_msg = []
