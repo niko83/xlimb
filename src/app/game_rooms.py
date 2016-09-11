@@ -57,7 +57,7 @@ class _Queue:
             }))
 
     def _gc_collect(self):
-        gc.collect()
+        #  gc.collect()
         self._handler3 = self._loop.call_later(3600, self._gc_collect)
 
     def _run_stat(self):
