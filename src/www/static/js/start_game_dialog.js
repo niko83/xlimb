@@ -206,7 +206,6 @@ function show_dialog_and_fill_values(){
       last_ship_type = '21'
     }
     show_tab(active_cls)
-    console.info(last_ship_type)
 
     change_ship_log(last_ship_type)
 

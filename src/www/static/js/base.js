@@ -74,6 +74,7 @@ $(document).ready(function(){
       "ship2": "/static/images/ship2_color.png",
       "ship3": "/static/images/ship3_color.png",
       "ship_implode": "/static/images/implode.png",
+      "immortal": "/static/images/immortal.png",
 
       "noname1": "/static/images/crop/footer.png",
       "noname2": "/static/images/crop/panel.png",
@@ -269,6 +270,16 @@ function drawShip(data){
   ctx.translate(x, y)
   ctx.rotate(angle_rotate)
 
+  if(data[8]){
+    ctx.drawImage(
+      preloader.images['immortal'], 
+      0, 0,
+      80, 80,
+      -40, -40,
+      80, 80
+    )
+  }
+
   ctx.drawImage(
     img,
     src_x, src_y,
@@ -376,7 +387,6 @@ function draw_frame(){
       var x = ship[2] + diff_x
       var y = ship[3] + diff_y
       var weight = ship[7]%100
-
 
     if(ship[7] < 30){
       var colors = ['#f00', '#700', '#300']
@@ -526,7 +536,7 @@ function parsing_blob(msg){
     ships_gl = []
     $('.name_title').hide()
 
-    var chunk = 8
+    var chunk = 9
     for (i=3,j=msg.length; i<j; i+=chunk) {
         tmp = msg.slice(i, i+chunk)
         tmp[2] += viewport_x

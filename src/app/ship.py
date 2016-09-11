@@ -122,6 +122,7 @@ class Ship(object):
             self.dead_step,
             self.ship_type,
             min(self.health, 2**15-1),
+            self.immortality,
         )
 
     @property

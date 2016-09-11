@@ -373,7 +373,7 @@ def startBot():
                             'x': data[2],
                             'y': data[3],
                         })
-                    data = data[8:]
+                    data = data[9:]
                 viewport_data['ships'] = tmp_ships
             elif data[0] == 20:
                 tmp_bonuses = []
