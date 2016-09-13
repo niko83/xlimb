@@ -9,6 +9,7 @@ control = {
   shot: 0,
   shot2: 0
 }
+has_correction_counter = 0
 
 viewport = {x: 0, y: 0, time: new Date().getTime()}
 before_viewport = {x: 0, y: 0, time: new Date().getTime()} 
@@ -65,6 +66,7 @@ $(document).ready(function(){
     $infopanel_bullet2 = $('.bullet2')
     $infopanel_fuel = $('.fuel')
     $warning_ping = $('.warning_ping')
+    $warning_ping_counter = $('.warning_ping .counter')
 
     $players = $('.players')
     $canvas_wrapper = $('.canvas_wrapper')
@@ -393,7 +395,7 @@ function draw_frame(){
     diff_y = diff_y_observer
   }
   if(has_correction){
-    // console.info(diff_x, diff_y)
+      has_correction_counter++;
   }
 
   var ships_gl_tmp = copy_array(ships_gl)
@@ -435,6 +437,7 @@ function draw_frame(){
 
   if(has_correction){
     $warning_ping.show()
+    $warning_ping_counter.html(has_correction_counter)
     setTimeout(function(){
       $warning_ping.hide()
     }, 500)
