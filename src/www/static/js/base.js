@@ -10,12 +10,21 @@ control = {
   shot2: 0
 }
 
-viewport = {x: 0, y: 0}
+viewport = {x: 0, y: 0, time: new Date().getTime()}
+before_viewport = {x: 0, y: 0, time: new Date().getTime()} 
 
 names = Array()
 
 function getDPI() {
   return document.getElementById("dpi").offsetHeight;
+}
+
+function copy_array(arr){
+  var newArr = Array(arr.length)
+  $.each(arr, function(idx, data){
+    newArr[idx] = data.slice()
+  })
+  return newArr
 }
 
 function erase_client_pk(){
@@ -55,6 +64,7 @@ $(document).ready(function(){
     $infopanel_bullet1 = $('.bullet1')
     $infopanel_bullet2 = $('.bullet2')
     $infopanel_fuel = $('.fuel')
+    $warning_ping = $('.warning_ping')
 
     $players = $('.players')
     $canvas_wrapper = $('.canvas_wrapper')
@@ -114,9 +124,9 @@ function stop_fake_observer(callback){
     cancelAnimationFrame(requestID_observer)
     requestID_observer = undefined
     callback()
-    if (window.ga && observer_start){
-        ga('send', 'observer', 'run', 'sec', parseInt((Date.now() - observer_start)/1000), {nonInteraction: true});
-    }
+    // if (window.ga && observer_start){
+        // ga('send', 'observer', 'run', 'sec', parseInt((Date.now() - observer_start)/1000), {nonInteraction: true});
+    // }
     observer_start = undefined
 }
 
@@ -234,10 +244,18 @@ function set_color(obj, value, edge){
 
 counter_frames = 0
 
-function drawShip(data){
+function drawShip(data, has_correction){
   var count_frames = 19
-  var x = data[2] + diff_x
-  var y = data[3] + diff_y
+
+  if (has_correction){
+      diff_x_tmp = diff_y_tmp = 0
+  }else{
+      diff_x_tmp = diff_x
+      diff_y_tmp = diff_y
+  }
+
+  var x = data[2] + diff_x_tmp
+  var y = data[3] + diff_y_tmp
 
   if (data[5] > 0){
     var img = preloader.images.ship_implode
@@ -336,29 +354,103 @@ function draw_frame(){
         ){
             var x=viewport.x
             var y=viewport.y
-            diff_x = diff_y = 0
+            diff_x_observer = diff_y_observer = 0
             observer_y = observer_x = undefined
         }else{
           var x = observer_x = observer_x + (viewport.x - observer_x) * 0.15
           var y = observer_y = observer_y + (viewport.y - observer_y) * 0.15
-          diff_x = observer_x - viewport.x
-          diff_y = observer_y - viewport.y
+          diff_x_observer = observer_x - viewport.x
+          diff_y_observer = observer_y - viewport.y
         }
     }
 
   counter_frames++;
 
-  ctx.drawImage(preloader.images.bckg, viewport.x + diff_x, viewport.y +  diff_y);
-  $.each(polygons, function(id, polygon){
-      ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
-      ctx.beginPath();
-      ctx.moveTo(polygon[0], polygon[1])
-      for(var i=0; i < polygon.length; i+=2){
-        ctx.lineTo(parseFloat(polygon[i]), parseFloat(polygon[i+1]))
+  var has_correction = false
+  if (diff_x_observer == 0){
+    var now = new Date().getTime() 
+    if (now - viewport.time > 20){
+      var diff = viewport.time - before_viewport.time
+      if (diff > 5){
+        // console.info('=====')
+        // console.info(before_viewport.x, viewport.x)
+        // console.info(before_viewport.y, viewport.y)
+        // console.info(diff)
+        var x_speed = (viewport.x - before_viewport.x)/diff
+        var y_speed = (viewport.y - before_viewport.y)/diff
+        var diff = now - viewport.time
+        diff_x = diff * x_speed
+        diff_y = diff * y_speed
+        has_correction |= true
+      }else{
+          diff_x = diff_y = 0
       }
-      ctx.closePath();
-      ctx.fill();
-  })
+    }else{
+      diff_x = diff_y = 0
+    }
+  }else{
+    diff_x = diff_x_observer
+    diff_y = diff_y_observer
+  }
+  if(has_correction){
+    console.info(diff_x, diff_y)
+  }
+
+  var ships_gl_tmp = copy_array(ships_gl)
+
+  if (diff_x_observer == 0){
+    if (now - ships_gl_time > 20){
+      if (before_ships_gl.length == ships_gl.length){
+        var diff = ships_gl_time - before_ships_gl_time
+
+        if (diff > 5){
+          has_correction |= true
+        // console.info("---")
+        // console.info(before_ships_gl[0])
+        // console.info(ships_gl[0])
+          $.each(ships_gl, function(idx, ship){
+            if (ship[0] == before_ships_gl[idx][0]){
+              $.each(ship, function(idx_attr, val){
+                var speed = (val - before_ships_gl[idx][idx_attr])/diff
+                var current_diff = now - ships_gl_time 
+                ships_gl_tmp[idx][idx_attr] = (ships_gl[idx][idx_attr] + current_diff * speed)
+                if(idx_attr == 4 && ships_gl_tmp[idx][idx_attr] < 0){
+                    ships_gl_tmp[idx][idx_attr] += 628 // 2 Pi * 100
+                }
+                if(idx_attr == 4 && ships_gl_tmp[idx][idx_attr] > 628){
+                    ships_gl_tmp[idx][idx_attr] -= 628 // 2 Pi * 100
+                }
+              })
+            }else{
+              // console.info('ship_id not same')
+            }
+          })
+        }
+        // console.info(ships_gl_tmp[0])
+      }else{
+          // console.info('ship_id lenght not same')
+      }
+    }
+  }
+
+  if(has_correction){
+    $warning_ping.show()
+    setTimeout(function(){
+      $warning_ping.hide()
+    }, 500)
+  }
+
+  ctx.drawImage(preloader.images.bckg, viewport.x + diff_x, viewport.y +  diff_y);
+  // $.each(polygons, function(id, polygon){
+      // ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+      // ctx.beginPath();
+      // ctx.moveTo(polygon[0], polygon[1])
+      // for(var i=0; i < polygon.length; i+=2){
+        // ctx.lineTo(parseFloat(polygon[i]), parseFloat(polygon[i+1]))
+      // }
+      // ctx.closePath();
+      // ctx.fill();
+  // })
 
   $.each(bonuses_gl, function(id, bonus){
     drawBonus(bonus)
@@ -382,20 +474,28 @@ function draw_frame(){
       }
   })
 
-  $.each(ships_gl, function(id, ship){
+
+  $.each(ships_gl_tmp, function(id, ship){
+
+    if (has_correction){
+        diff_x_tmp = diff_y_tmp = 0
+    }else{
+        diff_x_tmp = diff_x
+        diff_y_tmp = diff_y
+    }
+
     if (ship[5] == -1){
-      var x = ship[2] + diff_x
-      var y = ship[3] + diff_y
+      var x = ship[2] + diff_x_tmp
+      var y = ship[3] + diff_y_tmp
       var weight = ship[7]%100
 
-    if(ship[7] < 30){
-      var colors = ['#f00', '#700', '#300']
-    } else if(ship[7] < 50){
-      var colors = ['#ff0', '#770', '#330']
-    } else {
-      var colors = ['#0f0', '#070', '#030']
-    }
-    
+      if(ship[7] < 30){
+        var colors = ['#f00', '#700', '#300']
+      } else if(ship[7] < 50){
+        var colors = ['#ff0', '#770', '#330']
+      } else {
+        var colors = ['#0f0', '#070', '#030']
+      }
 
       ctx.fillStyle = colors[0]
       ctx.fillRect(x-weight/2, y-36, weight, 1)
@@ -414,8 +514,8 @@ function draw_frame(){
     }
   })
 
-  $.each(ships_gl, function(id, ship){
-      drawShip(ship)
+  $.each(ships_gl_tmp, function(id, ship){
+      drawShip(ship, has_correction)
   })
 
   requestID_game = requestAnimationFrame(draw_frame)
@@ -423,6 +523,9 @@ function draw_frame(){
 
 draw_objects = {}
 ships_gl = []
+ships_gl_time = new Date().getTime()
+before_ships_gl = []
+before_ships_gl_time = null
 polygons = []
 bullets = []
 bonuses_gl = []
@@ -443,8 +546,14 @@ function parsing_plain(msg){
 
       if(code == 'viewport'){
         var data = data.split('!')
+        before_viewport.x = viewport.x
+        before_viewport.y = viewport.y
+        before_viewport.time = viewport.time
+
         viewport.x = parseFloat(data[0])
         viewport.y = parseFloat(data[1])
+        viewport.time = new Date().getTime();
+
 
         $infopanel_health.text(data[2])
         $infopanel_fuel.text(data[3])
@@ -513,8 +622,11 @@ function parsing_blob(msg){
   var type = msg[0] /* 10-bullets 20-bonuses 30-ship*/
   var viewport_x = msg[1]
   var viewport_y = msg[2]
+
+
   var tmp
   if (type == 10){
+
     bullets = []
     var chunk = 3
     for (i=3,j=msg.length; i<j; i+=chunk) {
@@ -533,9 +645,13 @@ function parsing_blob(msg){
         bonuses_gl.push(tmp)
     }             
   } else if (type == 30){ 
-    ships_gl = []
-    $('.name_title').hide()
 
+    before_ships_gl = copy_array(ships_gl)
+
+    before_ships_gl_time = ships_gl_time
+    ships_gl = []
+    ships_gl_time = new Date().getTime()
+    $('.name_title').hide()
     var chunk = 9
     for (i=3,j=msg.length; i<j; i+=chunk) {
         tmp = msg.slice(i, i+chunk)
@@ -545,10 +661,8 @@ function parsing_blob(msg){
         ships_gl.push(tmp)
 
         var pk = 's_'+ tmp[0]
-        var title = tmp[1]
         var x = tmp[2] + diff_x
         var y = tmp[3] + diff_y
-        var route = tmp[4] / 100 
         var dead_step = tmp[5]
 
         if(dead_step == -1 && x > 50 && x < field[0]-50 && y > 50){
@@ -557,29 +671,6 @@ function parsing_blob(msg){
             top: (y-40 )+ 'px'
           }).show()
         }
-
-        // if(dead_step == 30 && pk == ship_pk){
-            // setTimeout(function(){
-              // erase_client_pk()
-              // show_dialog_and_fill_values()
-            // }, 2000)
-        // }
-
-        // if (!draw_objects[pk]){
-            // draw_objects[pk] = getShip(pk, title, x, y, route)
-        // }else{
-          // draw_objects[pk].current_position = [x, y]
-          // draw_objects[pk].current_route = route
-          // draw_objects[pk].dead_step = dead_step
-        // }
-        // actual_objects.push(pk)
-
-        // if(tmp[6] != undefined){
-          // draw_objects[pk].health = parseInt(tmp[6])
-          // draw_objects[pk].ammo = parseInt(tmp[7]) 
-          // draw_objects[pk].roket = parseInt(tmp[8])
-          // draw_objects[pk].fuel = parseInt(tmp[9])
-        // }
     }             
   } 
 }
@@ -608,13 +699,13 @@ function parsing_data(msg){
     socket.close()
     erase_client_pk()
 
-    if (window.ga){
-        ga('send', 'game', 'dead', data.dead_reason, data.lifetime, {nonInteraction: true})
-        ga('send', 'game', 'dead_remain', 'health', parseInt($infopanel_health.text()), {nonInteraction: true})
-        ga('send', 'game', 'dead_remain', 'bullet1', parseInt($infopanel_bullet1.text()), {nonInteraction: true})
-        ga('send', 'game', 'dead_remain', 'bullet2', parseInt($infopanel_bullet2.text()), {nonInteraction: true})
-        ga('send', 'game', 'dead_remain', 'fuel', parseInt($infopanel_fuel.text()), {nonInteraction: true})
-    }
+    // if (window.ga){
+        // ga('send', 'game', 'dead', data.dead_reason, data.lifetime, {nonInteraction: true})
+        // ga('send', 'game', 'dead_remain', 'health', parseInt($infopanel_health.text()), {nonInteraction: true})
+        // ga('send', 'game', 'dead_remain', 'bullet1', parseInt($infopanel_bullet1.text()), {nonInteraction: true})
+        // ga('send', 'game', 'dead_remain', 'bullet2', parseInt($infopanel_bullet2.text()), {nonInteraction: true})
+        // ga('send', 'game', 'dead_remain', 'fuel', parseInt($infopanel_fuel.text()), {nonInteraction: true})
+    // }
     show_dialog_and_fill_values()
   }else{
       console.info(command)
