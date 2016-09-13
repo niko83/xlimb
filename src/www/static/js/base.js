@@ -393,7 +393,7 @@ function draw_frame(){
     diff_y = diff_y_observer
   }
   if(has_correction){
-    console.info(diff_x, diff_y)
+    // console.info(diff_x, diff_y)
   }
 
   var ships_gl_tmp = copy_array(ships_gl)
