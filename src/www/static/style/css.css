@@ -54,6 +54,18 @@ body {
      text-align: center;
  }
 
+ .warning_ping{
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 70px;
+     background: #f00;
+     color: #fff;
+     font-size: 14px;
+     padding: 1px;
+     text-align: center;
+ }
+
 #dpi {
   height: 1in;
   left: -100%;

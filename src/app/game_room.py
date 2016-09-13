@@ -18,7 +18,7 @@ from app.castomization import (
 from app.constants import (
     VIEWPORT_SIZE, MAP_SIZE, MAP_SIZE_APPROX, CELL_STEP,
     CLIENT_TIMEOUT, CLIENT_ROOM_LIMIT, INTERVAL_STAT_NOTIFICATION,
-    BOTS,
+    BOTS, CLIENT_PROCESSING_INTERVAL
 )
 from app.vector import Vector2D
 logger = logging.getLogger('xlimb.' + __name__)
@@ -410,7 +410,7 @@ class GameRoom(object):
 
             client.ws.send_str(msg)
 
-        self._handler4 = self._loop.call_later(0.02, self._client_processing)
+        self._handler4 = self._loop.call_later(CLIENT_PROCESSING_INTERVAL, self._client_processing)
 
     def start(self):
         if self.has_started:
