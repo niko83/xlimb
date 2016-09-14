@@ -11,8 +11,8 @@ control = {
 }
 has_correction_counter = 0
 
-viewport = {x: 0, y: 0, time: new Date().getTime()}
-before_viewport = {x: 0, y: 0, time: new Date().getTime()} 
+viewport = {x: 0, y: 0, time: 0, last_use: new Date().getTime()}
+before_viewport = {x: 0, y: 0, time: 0} 
 
 names = Array()
 
@@ -371,18 +371,19 @@ function draw_frame(){
   var has_correction = false
   if (diff_x_observer == 0){
     var now = new Date().getTime() 
-    if (now - viewport.time > 20){
+    if (now - viewport.last_use > 20){
       var diff = viewport.time - before_viewport.time
-      if (diff > 5){
+      if (diff < 0){diff += 30000;}
+      if (diff > 0){
         // console.info('=====')
         // console.info(before_viewport.x, viewport.x)
         // console.info(before_viewport.y, viewport.y)
         // console.info(diff)
         var x_speed = (viewport.x - before_viewport.x)/diff
         var y_speed = (viewport.y - before_viewport.y)/diff
-        var diff = now - viewport.time
-        diff_x = diff * x_speed
-        diff_y = diff * y_speed
+        var current_diff = now - viewport.last_use
+        diff_x = current_diff * x_speed
+        diff_y = current_diff * y_speed
         has_correction |= true
       }else{
           diff_x = diff_y = 0
@@ -401,34 +402,37 @@ function draw_frame(){
   var ships_gl_tmp = copy_array(ships_gl)
 
   if (diff_x_observer == 0){
-    if (now - ships_gl_time > 20){
+    if (now - ships_gl_last_use > 20){
       if (before_ships_gl.length == ships_gl.length){
         var diff = ships_gl_time - before_ships_gl_time
 
-        if (diff > 5){
+        if (diff < 0){diff += 30000;}
+        if (diff >0) {
           has_correction |= true
-        // console.info("---")
-        // console.info(before_ships_gl[0])
-        // console.info(ships_gl[0])
+  // console.info("---")
+  // console.info(diff)
+  // console.info(before_ships_gl[0])
+  // console.info(ships_gl[0])
+          var current_diff = now - ships_gl_last_use 
+
           $.each(ships_gl, function(idx, ship){
             if (ship[0] == before_ships_gl[idx][0]){
               $.each(ship, function(idx_attr, val){
                 var speed = (val - before_ships_gl[idx][idx_attr])/diff
-                var current_diff = now - ships_gl_time 
                 ships_gl_tmp[idx][idx_attr] = (ships_gl[idx][idx_attr] + current_diff * speed)
-                if(idx_attr == 4 && ships_gl_tmp[idx][idx_attr] < 0){
-                    ships_gl_tmp[idx][idx_attr] += 628 // 2 Pi * 100
-                }
-                if(idx_attr == 4 && ships_gl_tmp[idx][idx_attr] > 628){
-                    ships_gl_tmp[idx][idx_attr] -= 628 // 2 Pi * 100
-                }
+                // if(idx_attr == 4 && ships_gl_tmp[idx][idx_attr] < 0){
+                    // ships_gl_tmp[idx][idx_attr] += 628 // 2 Pi * 100
+                // }
+                // if(idx_attr == 4 && ships_gl_tmp[idx][idx_attr] > 628){
+                    // ships_gl_tmp[idx][idx_attr] -= 628 // 2 Pi * 100
+                // }
               })
             }else{
               // console.info('ship_id not same')
             }
           })
         }
-        // console.info(ships_gl_tmp[0])
+// console.info(ships_gl_tmp[0])
       }else{
           // console.info('ship_id lenght not same')
       }
@@ -525,10 +529,11 @@ function draw_frame(){
 }
 
 draw_objects = {}
+ships_gl_last_use = new Date().getTime()
 ships_gl = []
-ships_gl_time = new Date().getTime()
+ships_gl_time = 0
 before_ships_gl = []
-before_ships_gl_time = null
+before_ships_gl_time = 0
 polygons = []
 bullets = []
 bonuses_gl = []
@@ -555,7 +560,8 @@ function parsing_plain(msg){
 
         viewport.x = parseFloat(data[0])
         viewport.y = parseFloat(data[1])
-        viewport.time = new Date().getTime();
+        viewport.time = data[6]
+        viewport.last_use = new Date().getTime()
 
 
         $infopanel_health.text(data[2])
@@ -653,10 +659,11 @@ function parsing_blob(msg){
 
     before_ships_gl_time = ships_gl_time
     ships_gl = []
-    ships_gl_time = new Date().getTime()
+    ships_gl_time = msg[3]
+    ships_gl_last_use = new Date().getTime()
     $('.name_title').hide()
     var chunk = 9
-    for (i=3,j=msg.length; i<j; i+=chunk) {
+    for (i=4,j=msg.length; i<j; i+=chunk) {
         tmp = msg.slice(i, i+chunk)
         tmp[2] += viewport_x
         tmp[3] += viewport_y 

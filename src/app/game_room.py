@@ -103,6 +103,7 @@ class GameRoom(object):
         self.bullets = []
         self.bonuses = []
         self.start_run = now()
+        self.start_run_micro = int((now().second % 30 * 1000) + now().microsecond / 1000)
         self.all_ships = []
 
     def get_stat(self):
@@ -282,6 +283,7 @@ class GameRoom(object):
             _now = now()
             app.constants.FRAME_INTERVAL = (_now - self.start_run).total_seconds() * 0.75
             self.start_run = _now
+            self.start_run_micro = int((_now.second % 30 * 1000) + _now.microsecond / 1000)
 
             processed_ramping = []
             for ship in self.all_ships:
@@ -363,12 +365,13 @@ class GameRoom(object):
             bckg_x = int(client.background_position.x)
             bckg_y = int(client.background_position.y)
 
-            global_msg = ['viewport:%d!%d!%d!%d!%d!%d' % (
+            global_msg = ['viewport:%d!%d!%d!%d!%d!%d!%d' % (
                 bckg_x, bckg_y,
                 client.ship.health if client.ship else 0,
                 client.ship.engine.fuel_amount if client.ship else 0,
                 client.ship.gun1.ammo_count if client.ship else 0,
                 client.ship.gun2.ammo_count if client.ship else 0,
+                self.start_run_micro,
             )]
 
             bin_data_bullets, bin_data_bonuses, bin_data_ships = self._bullet_bonuses_processing(
@@ -378,7 +381,7 @@ class GameRoom(object):
             client.ws.send_bytes(struct.pack('h'*(len(bin_data_bullets)+3), 10, bckg_x, bckg_y, *map(int, bin_data_bullets)))
             client.ws.send_bytes(struct.pack('h'*(len(bin_data_bonuses)+3), 20, bckg_x, bckg_y, *map(int, bin_data_bonuses)))
             try:
-                client.ws.send_bytes(struct.pack('h'*(len(bin_data_ships)+3), 30, bckg_x, bckg_y, *map(int, bin_data_ships)))
+                client.ws.send_bytes(struct.pack('h'*(len(bin_data_ships)+4), 30, bckg_x, bckg_y, self.start_run_micro, *map(int, bin_data_ships)))
             except:
                 logger.exception("%s, ", bin_data_ships)
 
