@@ -378,7 +378,7 @@ function draw_frame(){
   var has_correction = false
   if (diff_x_observer == 0){
     var now = new Date().getTime() 
-    if (now - viewport.last_use > 20){
+    if (now - viewport.last_use > 22){
       var diff = viewport.time - before_viewport.time
       if (diff < 0){diff += 30000;}
       if (diff > 0){
@@ -409,7 +409,7 @@ function draw_frame(){
   var ships_gl_tmp = copy_array(ships_gl)
 
   if (diff_x_observer == 0){
-    if (now - ships_gl_last_use > 20){
+    if (now - ships_gl_last_use > 22){
       if (before_ships_gl.length == ships_gl.length){
         var diff = ships_gl_time - before_ships_gl_time
 

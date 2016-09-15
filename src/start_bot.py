@@ -362,7 +362,7 @@ def startBot():
 
             if data[0] == 30:
                 tmp_ships = []
-                data = data[3:]
+                data = data[4:]
                 while data:
                     if 's_%s' % data[0] == ship_pk:
                         viewport_data['my_obj']['x'] = data[2]
