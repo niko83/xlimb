@@ -310,6 +310,13 @@ function drawShip(data, has_correction){
     size[1]
   )
   ctx.restore()
+
+  if(data[5] == -1 && x > 50 && x < field[0]-50 && y > 50){
+    $('.ship' + 's_' + data[0]).css({
+      left:  (x+90) + 'px ', 
+      top: (y-40 )+ 'px'
+    }).show()
+    }
 }
 
 
@@ -418,14 +425,27 @@ function draw_frame(){
           $.each(ships_gl, function(idx, ship){
             if (ship[0] == before_ships_gl[idx][0]){
               $.each(ship, function(idx_attr, val){
-                var speed = (val - before_ships_gl[idx][idx_attr])/diff
-                ships_gl_tmp[idx][idx_attr] = (ships_gl[idx][idx_attr] + current_diff * speed)
-                // if(idx_attr == 4 && ships_gl_tmp[idx][idx_attr] < 0){
-                    // ships_gl_tmp[idx][idx_attr] += 628 // 2 Pi * 100
-                // }
-                // if(idx_attr == 4 && ships_gl_tmp[idx][idx_attr] > 628){
-                    // ships_gl_tmp[idx][idx_attr] -= 628 // 2 Pi * 100
-                // }
+                if(idx_attr == 4){
+                    if(before_ships_gl[idx][idx_attr] < 157 && val > 470){
+                      var speed = (val-628 - before_ships_gl[idx][idx_attr])/diff
+                    }else if(before_ships_gl[idx][idx_attr] > 470 && val < 157){
+                      var speed = (val - (before_ships_gl[idx][idx_attr] - 628))/diff
+                    }else{
+                      var speed = (val - before_ships_gl[idx][idx_attr])/diff
+                    }
+
+                    var new_value = (ships_gl[idx][idx_attr] + current_diff * speed)
+                    if(new_value > 628){
+                      new_value = new_value % 628
+                    }
+                    if(new_value < 0){
+                      new_value = new_value + 628
+                    }
+                }else{
+                  var speed = (val - before_ships_gl[idx][idx_attr])/diff
+                  var new_value = (ships_gl[idx][idx_attr] + current_diff * speed)
+                }
+                ships_gl_tmp[idx][idx_attr] = new_value
               })
             }else{
               // console.info('ship_id not same')
@@ -669,18 +689,6 @@ function parsing_blob(msg){
         tmp[3] += viewport_y 
         tmp[7] /= 2
         ships_gl.push(tmp)
-
-        var pk = 's_'+ tmp[0]
-        var x = tmp[2] + diff_x
-        var y = tmp[3] + diff_y
-        var dead_step = tmp[5]
-
-        if(dead_step == -1 && x > 50 && x < field[0]-50 && y > 50){
-          $('.ship' + pk).css({
-            left:  (x+90) + 'px ', 
-            top: (y-40 )+ 'px'
-          }).show()
-        }
     }             
   } 
 }
