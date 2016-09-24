@@ -22,6 +22,9 @@ class Bullet:
             trace_life_limit=0,
             trace_health=-5,
             trace_count=0,
+            trace_route=0,
+            trace_ricochet=False,
+            bullet_speed=None,
     ):
         self.ship_emitter = emitter.ship_emitter if is_tracer else emitter
         self.pk = uuid.uuid4().hex[0:4]
@@ -31,6 +34,10 @@ class Bullet:
         self.trace_life_limit = trace_life_limit
         self.trace_health = trace_health
         self.trace_count = trace_count
+        self.trace_route = trace_route
+        self.trace_ricochet = trace_ricochet
+        self.bullet_speed = bullet_speed
+
 
         if is_tracer:
             bullet_route = random.random()*2*math.pi
@@ -65,7 +72,10 @@ class Bullet:
             if trace_speed is None:
                 self.current_speed = Vector2D(length=speed, angle=bullet_route)
             else:
-                self.current_speed = Vector2D(length=trace_speed * random.random(), angle=bullet_route)
+                if trace_route:
+                    self.current_speed = Vector2D(length=trace_speed * random.random(), angle=bullet_route) + self.bullet_speed * trace_route
+                else:
+                    self.current_speed = Vector2D(length=trace_speed * random.random(), angle=bullet_route)
         else:
             if reverse_shot:
                 self.current_speed = Vector2D(length=speed, angle=bullet_route + math.pi)
@@ -73,6 +83,8 @@ class Bullet:
                 self.current_speed = Vector2D(length=speed, angle=bullet_route)
                 if emitter.current_speed and not center_shot:
                     self.current_speed += emitter.current_speed
+
+        self.bullet_speed = self.current_speed
 
         self.candidat_position = Vector2D(x=0, y=0)
         self.ricochet = ricochet
@@ -122,13 +134,15 @@ class Bullet:
                 Bullet(
                     self,
                     is_tracer=True,
-                    ricochet=False,
+                    ricochet=self.trace_ricochet,
                     speed=self.trace_speed,
                     health=self.trace_health,
                     dispersion=self.trace_dispersion,
                     life_limit=self.trace_life_limit,
                     trace_speed=self.trace_speed,
                     trace_dispersion=None,
+                    bullet_speed=self.bullet_speed,
+                    trace_route=self.trace_route,
                 )
             )
 

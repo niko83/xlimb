@@ -18,7 +18,7 @@ from app.castomization import (
 from app.constants import (
     VIEWPORT_SIZE, MAP_SIZE, MAP_SIZE_APPROX, CELL_STEP,
     CLIENT_TIMEOUT, CLIENT_ROOM_LIMIT, INTERVAL_STAT_NOTIFICATION,
-    BOTS, CLIENT_PROCESSING_INTERVAL
+    BOTS, CLIENT_PROCESSING_INTERVAL, DeadReason,
 )
 from app.vector import Vector2D
 logger = logging.getLogger('xlimb.' + __name__)
@@ -194,7 +194,7 @@ class GameRoom(object):
                         client.ws.send_str(json.dumps({
                             'command': 'socket_closed',
                             'data': {
-                                'dead_reason': 'timeout',
+                                'dead_reason': DeadReason.TIMEOUT,
                                 'lifetime': -1,
                             }
                         }))
@@ -378,12 +378,18 @@ class GameRoom(object):
                 client
             )
 
-            client.ws.send_bytes(struct.pack('h'*(len(bin_data_bullets)+3), 10, bckg_x, bckg_y, *map(int, bin_data_bullets)))
-            client.ws.send_bytes(struct.pack('h'*(len(bin_data_bonuses)+3), 20, bckg_x, bckg_y, *map(int, bin_data_bonuses)))
             try:
+                client.ws.send_bytes(struct.pack('h'*(len(bin_data_bullets)+3), 10, bckg_x, bckg_y, *map(int, bin_data_bullets)))
+                client.ws.send_bytes(struct.pack('h'*(len(bin_data_bonuses)+3), 20, bckg_x, bckg_y, *map(int, bin_data_bonuses)))
                 client.ws.send_bytes(struct.pack('h'*(len(bin_data_ships)+4), 30, bckg_x, bckg_y, self.start_run_micro, *map(int, bin_data_ships)))
             except:
+                for b in self.bullets:
+                    b.life_limit = -1
+                for s in self.all_ships:
+                    s.mark_as_dead(reason=DeadReason.WORLD_COLLISION_SUICIDE, to_dive=False)
+
                 logger.exception("%s, ", bin_data_ships)
+
 
 
             """

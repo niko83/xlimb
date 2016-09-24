@@ -124,8 +124,8 @@ class W11(Bullet):
         super(W11, self).__init__(
             emitter,
             speed=300,
-            ricochet=False,
-            life_limit=1,
+            ricochet=True,
+            life_limit=2,
             health=-2,
             dispersion=0.7,
 
@@ -133,7 +133,8 @@ class W11(Bullet):
             trace_life_limit=0.3,
             trace_health=-2,
             trace_count=5,
-            trace_speed=200,
+            trace_speed=50,
+            trace_route=0.5,
         )
 
 
@@ -143,7 +144,7 @@ class W12(Bullet):
             emitter,
             speed=600,
             ricochet=True,
-            life_limit=1,
+            life_limit=2,
             health=-2,
             dispersion=0.2
         )
@@ -155,7 +156,7 @@ class W13(Bullet):
             emitter,
             speed=600,
             ricochet=True,
-            life_limit=1,
+            life_limit=2,
             health=-2,
             dispersion=0
         )
@@ -171,7 +172,7 @@ class W21(Bullet):
             able_to_make_tracing=0.2,
             trace_speed=0,
             trace_dispersion=0,
-            trace_life_limit=3,
+            trace_life_limit=4,
             trace_health=-10,
             trace_count=30,
         )
@@ -192,6 +193,7 @@ class W22(Bullet):
             trace_health=-8,
             trace_count=100,
             trace_speed=250,
+            trace_ricochet=True,
         )
 
 
@@ -203,10 +205,12 @@ class W23(Bullet):
             ricochet=False, life_limit=4,
             health=-49, dispersion=0,
             able_to_make_tracing=0.3,
-            trace_life_limit=1.2,
+            trace_life_limit=2.0,
             trace_health=-5,
             trace_count=40,
-            trace_speed=45,
+            trace_speed=80,
+            trace_route=0.3,
+            trace_ricochet=True,
         )
 
 

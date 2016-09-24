@@ -44,7 +44,9 @@ class DeadReason:
     SUICIDE = 'suicide'
     WORLD_COLLISION = 'world_collision'
     WORLD_COLLISION_BIRTH = 'world_collision_birth'
+    WORLD_COLLISION_SUICIDE = 'world_collision_suicide'
     RAMPING = 'ramping'
+    TIMEOUT = 'timeout'
 
 
 BOTS = [
