@@ -354,7 +354,10 @@ class GameRoom(object):
 
         return bin_data, bonuses_bin_data, ships_bin_data
 
-    def _client_processing(self):
+    def _client_processing(self, bufer=[[], []]):
+
+        #  start_run_micro = int((now().second % 30 * 1000) + now().microsecond / 1000)
+
         for client in self.clients:
 
             if client.ws.closed:
@@ -379,9 +382,9 @@ class GameRoom(object):
             )
 
             try:
-                client.ws.send_bytes(struct.pack('h'*(len(bin_data_bullets)+3), 10, bckg_x, bckg_y, *map(int, bin_data_bullets)))
-                client.ws.send_bytes(struct.pack('h'*(len(bin_data_bonuses)+3), 20, bckg_x, bckg_y, *map(int, bin_data_bonuses)))
-                client.ws.send_bytes(struct.pack('h'*(len(bin_data_ships)+4), 30, bckg_x, bckg_y, self.start_run_micro, *map(int, bin_data_ships)))
+                bufer[1].append(struct.pack('h'*(len(bin_data_bullets)+3), 10, bckg_x, bckg_y, *map(int, bin_data_bullets)))
+                bufer[1].append(struct.pack('h'*(len(bin_data_bonuses)+3), 20, bckg_x, bckg_y, *map(int, bin_data_bonuses)))
+                bufer[1].append(struct.pack('h'*(len(bin_data_ships)+4), 30, bckg_x, bckg_y, self.start_run_micro, *map(int, bin_data_ships)))
             except:
                 for b in self.bullets:
                     b.life_limit = -1
@@ -416,8 +419,13 @@ class GameRoom(object):
             msg = 'plain' + '|'.join(global_msg)
 
             _up_summary_trafic(len(msg))
-
-            client.ws.send_str(msg)
+            bufer[0].append(msg)
+            if len(bufer[0]) > random.randint(4, 8):
+                for d in bufer[0]:
+                    client.ws.send_str(d)
+                for d in bufer[1]:
+                    client.ws.send_bytes(d)
+                bufer[0], bufer[1] = [], []
 
         self._handler4 = self._loop.call_later(CLIENT_PROCESSING_INTERVAL, self._client_processing)
 

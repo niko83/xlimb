@@ -11,8 +11,10 @@ control = {
 }
 has_correction_counter = 0
 
-viewport = {x: 0, y: 0, time: 0, last_use: new Date().getTime()}
+viewport = {x: 0, y: 0, time: 0, last_use: new Date().getTime(), approx_time: -1}
 before_viewport = {x: 0, y: 0, time: 0} 
+
+avg_ping = Array(0)
 
 names = Array()
 
@@ -378,30 +380,41 @@ function draw_frame(){
   var has_correction = false
   if (diff_x_observer == 0){
     var now = new Date().getTime() 
-    if (now - viewport.last_use > 22){
+    var last_use_diff = now - viewport.last_use
+    if (last_use_diff > 22){
       var diff = viewport.time - before_viewport.time
       if (diff < 0){diff += 30000;}
       if (diff > 0){
-        // console.info('=====')
-        // console.info(before_viewport.x, viewport.x)
-        // console.info(before_viewport.y, viewport.y)
-        // console.info(diff)
+        console.info('=====')
+        console.info(before_viewport.x, viewport.x)
+        console.info(before_viewport.y, viewport.y)
+        console.info(diff)
         var x_speed = (viewport.x - before_viewport.x)/diff
         var y_speed = (viewport.y - before_viewport.y)/diff
         var current_diff = now - viewport.last_use
-        diff_x = current_diff * x_speed
-        diff_y = current_diff * y_speed
+        // console.info('last_use_diff', last_use_diff)
+        // console.info('time', viewport.time)
         has_correction |= true
+        skipped_time += last_use_diff
+        viewport.approx_time = viewport.time + 
+        diff_x = last_use_diff * x_speed
+        diff_y = last_use_diff * y_speed
       }else{
+          viewport.approx_time = -1
           diff_x = diff_y = 0
       }
     }else{
+      viewport.approx_time = -1
       diff_x = diff_y = 0
     }
   }else{
     diff_x = diff_x_observer
     diff_y = diff_y_observer
   }
+
+  console.info("viewport y ,  diff y", viewport.y, diff_y)
+
+
   if(has_correction){
       has_correction_counter++;
   }
@@ -574,15 +587,21 @@ function parsing_plain(msg){
 
       if(code == 'viewport'){
         var data = data.split('!')
+
         before_viewport.x = viewport.x
         before_viewport.y = viewport.y
         before_viewport.time = viewport.time
 
         viewport.x = parseFloat(data[0])
         viewport.y = parseFloat(data[1])
-        viewport.time = data[6]
-        viewport.last_use = new Date().getTime()
+        viewport.time = parseInt(data[6])
 
+        if(viewport.approx_time == -1 || (viewport.approx_time-data[6]) % 30000 < 44){
+          viewport.last_use = new Date().getTime()
+            console.info('+')
+        }else{
+            console.info('-')
+        }
 
         $infopanel_health.text(data[2])
         $infopanel_fuel.text(data[3])
