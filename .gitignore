@@ -12,4 +12,4 @@ _build
 __pycache__
 
 build
-polygon_data.c
+#polygon_data.c
